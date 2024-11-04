@@ -12,8 +12,17 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		3BFA5FCDC880716B15E52140 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
+		4A5B360969304C738618007B /* Lalezar-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C579F2FDC4CC4238B3A5DDD8 /* Lalezar-Regular.ttf */; };
+		6E784800050D4FD5AABAC9CE /* Inter_18pt-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A896776EA6464EBEA83689A3 /* Inter_18pt-ExtraBold.ttf */; };
+		6EB92A29AA944364833E7553 /* Inter_18pt-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 556F4CFD412643458E027069 /* Inter_18pt-SemiBold.ttf */; };
 		7699B88040F8A987B510C191 /* libPods-DailyPrize-DailyPrizeTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-DailyPrize-DailyPrizeTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		971CECBF60994A919E0AAE4F /* Inter_18pt-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CE2F1E0BAB804D3F9E245813 /* Inter_18pt-Light.ttf */; };
+		B1B6B30AF2654354BD429B91 /* Inter-VariableFont_opsz,wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 86AFEA945EF34527B6DE3ADA /* Inter-VariableFont_opsz,wght.ttf */; };
+		BC553DF3E6DA453CAE4E0DC9 /* Inter_18pt-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6FA8A4A8B964FF682177745 /* Inter_18pt-Regular.ttf */; };
+		D9C10C20B59F42CD93CA2BB7 /* Inter_18pt-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5A0BE5C47ADE410686C37D46 /* Inter_18pt-Medium.ttf */; };
+		EE7C4A5B90AA4375B7B178FB /* Inter_18pt-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 527136F190904D7E923C1B94 /* Inter_18pt-Bold.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,11 +48,19 @@
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = DailyPrize/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		19F6CBCC0A4E27FBF8BF4A61 /* libPods-DailyPrize-DailyPrizeTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-DailyPrize-DailyPrizeTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B4392A12AC88292D35C810B /* Pods-DailyPrize.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DailyPrize.debug.xcconfig"; path = "Target Support Files/Pods-DailyPrize/Pods-DailyPrize.debug.xcconfig"; sourceTree = "<group>"; };
+		527136F190904D7E923C1B94 /* Inter_18pt-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter_18pt-Bold.ttf"; path = "../src/assets/fonts/Inter_18pt-Bold.ttf"; sourceTree = "<group>"; };
+		556F4CFD412643458E027069 /* Inter_18pt-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter_18pt-SemiBold.ttf"; path = "../src/assets/fonts/Inter_18pt-SemiBold.ttf"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-DailyPrize.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DailyPrize.release.xcconfig"; path = "Target Support Files/Pods-DailyPrize/Pods-DailyPrize.release.xcconfig"; sourceTree = "<group>"; };
+		5A0BE5C47ADE410686C37D46 /* Inter_18pt-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter_18pt-Medium.ttf"; path = "../src/assets/fonts/Inter_18pt-Medium.ttf"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-DailyPrize-DailyPrizeTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DailyPrize-DailyPrizeTests.debug.xcconfig"; path = "Target Support Files/Pods-DailyPrize-DailyPrizeTests/Pods-DailyPrize-DailyPrizeTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-DailyPrize.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-DailyPrize.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = DailyPrize/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		86AFEA945EF34527B6DE3ADA /* Inter-VariableFont_opsz,wght.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter-VariableFont_opsz,wght.ttf"; path = "../src/assets/fonts/Inter-VariableFont_opsz,wght.ttf"; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-DailyPrize-DailyPrizeTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DailyPrize-DailyPrizeTests.release.xcconfig"; path = "Target Support Files/Pods-DailyPrize-DailyPrizeTests/Pods-DailyPrize-DailyPrizeTests.release.xcconfig"; sourceTree = "<group>"; };
+		A6FA8A4A8B964FF682177745 /* Inter_18pt-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter_18pt-Regular.ttf"; path = "../src/assets/fonts/Inter_18pt-Regular.ttf"; sourceTree = "<group>"; };
+		A896776EA6464EBEA83689A3 /* Inter_18pt-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter_18pt-ExtraBold.ttf"; path = "../src/assets/fonts/Inter_18pt-ExtraBold.ttf"; sourceTree = "<group>"; };
+		C579F2FDC4CC4238B3A5DDD8 /* Lalezar-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Lalezar-Regular.ttf"; path = "../src/assets/fonts/Lalezar-Regular.ttf"; sourceTree = "<group>"; };
+		CE2F1E0BAB804D3F9E245813 /* Inter_18pt-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter_18pt-Light.ttf"; path = "../src/assets/fonts/Inter_18pt-Light.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -124,6 +141,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				F556DDEDC08440C4AB1BB9A8 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -148,6 +166,22 @@
 				89C6BE57DB24E9ADA2F236DE /* Pods-DailyPrize-DailyPrizeTests.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		F556DDEDC08440C4AB1BB9A8 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				86AFEA945EF34527B6DE3ADA /* Inter-VariableFont_opsz,wght.ttf */,
+				C579F2FDC4CC4238B3A5DDD8 /* Lalezar-Regular.ttf */,
+				527136F190904D7E923C1B94 /* Inter_18pt-Bold.ttf */,
+				A896776EA6464EBEA83689A3 /* Inter_18pt-ExtraBold.ttf */,
+				CE2F1E0BAB804D3F9E245813 /* Inter_18pt-Light.ttf */,
+				5A0BE5C47ADE410686C37D46 /* Inter_18pt-Medium.ttf */,
+				A6FA8A4A8B964FF682177745 /* Inter_18pt-Regular.ttf */,
+				556F4CFD412643458E027069 /* Inter_18pt-SemiBold.ttf */,
+			);
+			name = Resources;
+			path = "";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -245,6 +279,15 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				B1B6B30AF2654354BD429B91 /* Inter-VariableFont_opsz,wght.ttf in Resources */,
+				4A5B360969304C738618007B /* Lalezar-Regular.ttf in Resources */,
+				EE7C4A5B90AA4375B7B178FB /* Inter_18pt-Bold.ttf in Resources */,
+				6E784800050D4FD5AABAC9CE /* Inter_18pt-ExtraBold.ttf in Resources */,
+				971CECBF60994A919E0AAE4F /* Inter_18pt-Light.ttf in Resources */,
+				D9C10C20B59F42CD93CA2BB7 /* Inter_18pt-Medium.ttf in Resources */,
+				BC553DF3E6DA453CAE4E0DC9 /* Inter_18pt-Regular.ttf in Resources */,
+				6EB92A29AA944364833E7553 /* Inter_18pt-SemiBold.ttf in Resources */,
+				3BFA5FCDC880716B15E52140 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -584,7 +627,14 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
+				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
+				USE_HERMES = true;
 			};
 			name = Debug;
 		};
@@ -649,7 +699,13 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
+				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
+				USE_HERMES = true;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
