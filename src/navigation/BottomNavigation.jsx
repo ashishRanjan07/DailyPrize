@@ -2,14 +2,13 @@ import { Image, StyleSheet } from 'react-native';
 import React from 'react';
 
 import Home from '../screens/app/Home';
-import Refer from '../screens/app/Refer';
 import Wallet from '../screens/app/Wallet';
 import Profile from '../screens/app/Profile';
 import Color from '../utils/Colors';
-import { moderateScale, textScale } from '../utils/Responsive';
-import Icon from 'react-native-vector-icons/Ionicons'; 
+import { moderateScale, textScale } from '../utils/Responsive'; 
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { ImagePath } from '../utils/ImagePath';
+import Prize from '../screens/app/Prize';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -33,11 +32,11 @@ const BottomNavigation = () => {
         }} 
       />
       <Tab.Screen 
-        name="Referral" 
-        component={Refer} 
+        name="Leaderboard" 
+        component={Prize} 
         options={{
           tabBarIcon: ({ color }) => (
-            <Image source={ImagePath.refer} resizeMode='cover' style={{width:moderateScale(30),height:moderateScale(25)}} />
+            <Image source={ImagePath.leader} resizeMode='cover' style={{width:moderateScale(30),height:moderateScale(25)}} />
           ),
         }} 
       />

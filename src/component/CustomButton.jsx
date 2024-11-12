@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     text:{
         fontFamily:FontFamily.Inter_Bold,
         color:Color.white,
-        fontSize:textScale(25),
-        padding:moderateScale(10)
+        fontSize:textScale(20),
+        padding:moderateScale(5)
     }
 })

@@ -53,7 +53,7 @@ const Registration = () => {
             style={{width: '80%', height: moderateScale(250)}}
           />
           <View style={styles.textInputBoxHolder}>
-            <Feather name="user" color={Color.orange} size={textScale(35)} />
+            <Feather name="user" color={Color.orange} size={textScale(25)} />
             <TextInput
               placeholder="Name"
               placeholderTextColor={Color.textGray}
@@ -64,7 +64,7 @@ const Registration = () => {
             />
           </View>
           <View style={styles.textInputBoxHolder}>
-            <Feather name="mail" color={Color.orange} size={textScale(35)} />
+            <Feather name="mail" color={Color.orange} size={textScale(25)} />
             <TextInput
               placeholder="Email"
               placeholderTextColor={Color.textGray}
@@ -90,7 +90,7 @@ const Registration = () => {
             />
           </View>
           <View style={styles.textInputBoxHolder}>
-            <Feather name="lock" color={Color.orange} size={textScale(35)} />
+            <Feather name="lock" color={Color.orange} size={textScale(25)} />
             <TextInput
               placeholder="Password"
               placeholderTextColor={Color.textGray}
@@ -102,7 +102,7 @@ const Registration = () => {
             />
           </View>
           <View style={styles.textInputBoxHolder}>
-            <Entypo name="code" color={Color.orange} size={textScale(35)} />
+            <Entypo name="code" color={Color.orange} size={textScale(25)} />
             <TextInput
               placeholder="Referral Code"
               placeholderTextColor={Color.textGray}
@@ -152,9 +152,9 @@ const styles = StyleSheet.create({
 
   textInput: {
     width: '85%',
-    padding: moderateScale(20),
+    padding: moderateScale(10),
     fontFamily: FontFamily.Inter_SemiBold,
-    fontSize: textScale(20),
+    fontSize: textScale(16),
     color: Color.black,
   },
   text: {
