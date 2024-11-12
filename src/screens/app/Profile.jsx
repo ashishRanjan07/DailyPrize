@@ -14,13 +14,19 @@ import {ImagePath} from '../../utils/ImagePath';
 import {
   moderateScale,
   moderateScaleVertical,
+  scale,
   textScale,
 } from '../../utils/Responsive';
 import FontFamily from '../../utils/FontFamily';
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { useNavigation } from '@react-navigation/native';
+
 
 const Profile = () => {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.main}>
       <SafeAreaView style={{backgroundColor: Color.white}} />
@@ -28,7 +34,7 @@ const Profile = () => {
       <Image
         source={ImagePath.logo}
         resizeMode="cover"
-        style={{width: moderateScale(200), height: moderateScale(250)}}
+        style={{width: moderateScale(150), height: moderateScale(150)}}
       />
       <Text style={styles.nameText}>Hello,Ashish Ranjan!</Text>
       <LinearGradient colors={['orange', 'red']} style={styles.gradientBox}>
@@ -38,11 +44,19 @@ const Profile = () => {
         <View style={{width: '50%'}}>
           <Image
             source={ImagePath.coin}
-            resizeMode="cover"
+            resizeMode="contain"
             style={{width: '100%', height: moderateScale(150)}}
           />
         </View>
       </LinearGradient>
+      <TouchableOpacity style={styles.boxHolder} onPress={()=> navigation.navigate('Refer')}>
+        <FontAwesome
+          name="share"
+          color={Color.black}
+          size={textScale(22)}
+        />
+        <Text style={styles.text}>Refer and Earn</Text>
+      </TouchableOpacity>
       <TouchableOpacity style={styles.boxHolder}>
         <MaterialIcons
           name="security"
@@ -82,14 +96,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   nameText: {
-    fontFamily: FontFamily.Inter_SemiBold,
+    fontFamily: FontFamily.Inter_Medium,
     color: Color.black,
-    fontSize: textScale(22),
+    fontSize: textScale(18),
   },
   gradientBox: {
-    width: '90%',
-    height: 150,
-    borderRadius: 10,
+    width: '95%',
+    height: moderateScale(150),
+    borderRadius: moderateScale(10),
     alignItems: 'center',
     flexDirection: 'row',
     padding: moderateScale(10),
@@ -99,6 +113,9 @@ const styles = StyleSheet.create({
     color: Color.white,
     fontSize: textScale(18),
     fontFamily: FontFamily.Inter_Medium,
+    lineHeight:scale(30),
+    textAlign:'center',
+    letterSpacing:scale(1)
   },
   text: {
     fontFamily: FontFamily.Inter_SemiBold,

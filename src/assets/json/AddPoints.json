@@ -1,0 +1,32 @@
+[
+    {
+        "id": 1,
+        "points": "100 Points",
+        "value": "100"
+    },
+    {
+        "id": 2,
+        "points": "200 Points",
+        "value": "200"
+    },
+    {
+        "id": 3,
+        "points": "400 Points",
+        "value": "400"
+    },
+    {
+        "id": 4,
+        "points": "800 Points",
+        "value": "800"
+    },
+    {
+        "id": 5,
+        "points": "1600 Points",
+        "value": "1600"
+    },
+    {
+        "id": 6,
+        "points": "3200 Points",
+        "value": "3200"
+    }
+]

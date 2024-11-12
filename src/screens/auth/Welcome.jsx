@@ -21,7 +21,7 @@ const Welcome = () => {
     <View style={styles.main}>
       <SafeAreaView style={{backgroundColor: Color.white}} />
       <StatusBar backgroundColor={Color.white} barStyle={'dark-content'} />
-      <View style={styles.imageHolder}>
+    
         <Image
           source={ImagePath.logo}
           resizeMode="contain"
@@ -36,7 +36,7 @@ const Welcome = () => {
             handleAction={() => navigation.navigate('Login')}
           />
         </View>
-      </View>
+     
     </View>
   );
 };
@@ -50,14 +50,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  imageHolder: {
-    width: '100%',
-    height: '100%',
-    alignItems: 'center',
-  },
   imageStyle: {
     width: '100%',
-    height: '50%',
+    height: '40%',
   },
   text: {
     fontFamily: FontFamily.Lalezar,
