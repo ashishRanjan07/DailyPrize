@@ -1,14 +1,13 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity } from 'react-native'
 import React from 'react'
 import FontFamily from '../utils/FontFamily'
 import Color from '../utils/Colors'
 import { moderateScale, textScale } from '../utils/Responsive'
 
 const CustomButton = ({name,handleAction}) => {
-    const a =" ->"
   return (
     <TouchableOpacity style={styles.main} onPress={handleAction}>
-      <Text style={styles.text}>{name}{a} </Text>
+      <Text style={styles.text}>{name} </Text>
     </TouchableOpacity>
   )
 }
@@ -25,7 +24,7 @@ const styles = StyleSheet.create({
     text:{
         fontFamily:FontFamily.Inter_Bold,
         color:Color.white,
-        fontSize:textScale(20),
-        padding:moderateScale(5)
+        fontSize:textScale(16),
+        padding:moderateScale(10)
     }
 })

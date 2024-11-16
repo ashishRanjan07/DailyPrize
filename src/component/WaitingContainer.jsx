@@ -45,8 +45,8 @@ const styles = StyleSheet.create({
     gap: moderateScaleVertical(25),
   },
   image: {
-    width: moderateScale(250),
-    height: moderateScale(250),
+    width: moderateScale(300),
+    height: moderateScale(300),
   },
   text:{
     fontFamily:FontFamily.Inter_Medium,

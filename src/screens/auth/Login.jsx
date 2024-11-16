@@ -34,11 +34,11 @@ const Login = () => {
       <SafeAreaView style={{backgroundColor: Color.white}} />
       <Image
         source={ImagePath.logo}
-        resizeMode="center"
+        resizeMode="cover"
         style={styles.imageStyle}
       />
       <View style={styles.textInputBoxHolder}>
-        <Feather name="smartphone" color={Color.orange} size={textScale(25)} />
+        <Feather name="smartphone" color={Color.orange} size={textScale(20)} />
         <TextInput
           placeholder="Mobile Number"
           placeholderTextColor={Color.textGray}
@@ -49,7 +49,7 @@ const Login = () => {
         />
       </View>
       <View style={styles.textInputBoxHolder}>
-        <Feather name="lock" color={Color.orange} size={textScale(25)} />
+        <Feather name="lock" color={Color.orange} size={textScale(20)} />
         <TextInput
           placeholder="Password"
           placeholderTextColor={Color.textGray}
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
   },
   imageStyle: {
     width: '100%',
-    height: '40%',
+    height: '35%',
   },
   textInput: {
     width: '85%',
@@ -107,7 +107,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderColor: Color.textGray,
     borderRadius: moderateScale(10),
-    paddingHorizontal: moderateScale(5),
+    padding:moderateScale(5),
+    paddingHorizontal: moderateScale(10),
     marginBottom: moderateScaleVertical(10),
   },
   text: {
