@@ -13,4 +13,6 @@ export const ImagePath = {
   scratchCard:require('../assets/image/scratchCard.png'),
   voucher:require('../assets/image/voucher.png'),
   leader:require('../assets/image/leader1.png'),
+  ads:require('../assets/image/ads.png'),
+  ads2:require('../assets/image/ads2.png'),
 };

@@ -1,4 +1,5 @@
 import {
+  Dimensions,
   Image,
   SafeAreaView,
   StatusBar,
@@ -7,20 +8,21 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Color from '../../utils/Colors';
 import {
   moderateScale,
   moderateScaleVertical,
   textScale,
 } from '../../utils/Responsive';
-import { ImagePath } from '../../utils/ImagePath';
+import {ImagePath} from '../../utils/ImagePath';
 import FontFamily from '../../utils/FontFamily';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import WaitingContainer from '../../component/WaitingContainer';
 import AddCoupon from './AddCoupon';
 import ScratchCardContainer from './ScratchCardContainer';
+import Carousel from 'react-native-reanimated-carousel';
 
 const Home = () => {
   const navigation = useNavigation();
@@ -28,22 +30,30 @@ const Home = () => {
   const [activeSection, setActiveSection] = useState(null);
   const [userPoints, setUserPoints] = useState(0);
 
+  const width = Dimensions.get('window').width;
+
+  const adsImages = [
+    ImagePath.ads, 
+    ImagePath.ads2, 
+  ];
+
+
   useEffect(() => {
     if (waitingTime > 0) {
       const interval = setInterval(() => {
-        setWaitingTime((prevTime) => prevTime - 1);
+        setWaitingTime(prevTime => prevTime - 1);
       }, 1000);
       return () => clearInterval(interval);
     }
   }, [waitingTime]);
 
-  const increasePoints = (points) => {
-    setUserPoints((prevPoints) => prevPoints + points);
+  const increasePoints = points => {
+    setUserPoints(prevPoints => prevPoints + points);
   };
 
   return (
     <View style={styles.main}>
-      <SafeAreaView style={{ backgroundColor: Color.white }} />
+      <SafeAreaView style={{backgroundColor: Color.white}} />
       <StatusBar backgroundColor={Color.white} barStyle={'dark-content'} />
       {/* Header Holder */}
       <View style={styles.headerHolder}>
@@ -57,7 +67,7 @@ const Home = () => {
           style={styles.logo}
         />
 
-        <TouchableOpacity style={{ width: '25%', alignItems: 'center' }}>
+        <TouchableOpacity style={{width: '25%', alignItems: 'center'}}>
           <MaterialCommunityIcons
             name="bell-badge"
             size={textScale(30)}
@@ -69,37 +79,30 @@ const Home = () => {
       <View style={styles.nameHolder}>
         <Text style={styles.nameText}>Welcome Ashish Ranjan</Text>
       </View>
-      <View style={[styles.nameHolder, { height: moderateScale(90) }]}>
-        <Image
-          source={ImagePath.timer}
-          resizeMode="contain"
-          style={{ width: moderateScale(100), height: moderateScale(50) }}
-        />
-        <Text style={styles.nameText}>Hourly Game, Hourly Prize</Text>
-      </View>
       {waitingTime > 0 ? (
         <WaitingContainer waitingTime={waitingTime} />
       ) : (
         <>
           {activeSection === 'Add Coupon' ? (
-            <AddCoupon increasePoints={increasePoints} setActiveSection={setActiveSection} />
+            <AddCoupon
+              increasePoints={increasePoints}
+              setActiveSection={setActiveSection}
+            />
           ) : activeSection === 'Scratch Card' ? (
             <ScratchCardContainer setActiveSection={setActiveSection} />
           ) : (
             <>
               <TouchableOpacity
                 style={styles.addCouponHolder}
-                onPress={() => setActiveSection('Add Coupon')}
-              >
+                onPress={() => setActiveSection('Add Coupon')}>
                 <View style={styles.innerView}>
                   <View style={styles.textView}>
                     <Text style={styles.text}>🏷️Add Coupon🎁</Text>
                     <Text
                       style={[
                         styles.text,
-                        { fontSize: textScale(12), color: Color.black },
-                      ]}
-                    >
+                        {fontSize: textScale(12), color: Color.black},
+                      ]}>
                       💥Click here to add Coupon🎟
                     </Text>
                   </View>
@@ -112,17 +115,15 @@ const Home = () => {
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.addCouponHolder}
-                onPress={() => setActiveSection('Scratch Card')}
-              >
+                onPress={() => setActiveSection('Scratch Card')}>
                 <View style={styles.innerView}>
                   <View style={styles.textView}>
                     <Text style={styles.text}>🏆Scratch Card💎👉</Text>
                     <Text
                       style={[
                         styles.text,
-                        { fontSize: textScale(12), color: Color.black },
-                      ]}
-                    >
+                        {fontSize: textScale(12), color: Color.black},
+                      ]}>
                       🎉Click here to Scratch🎖️
                     </Text>
                   </View>
@@ -133,6 +134,28 @@ const Home = () => {
                   />
                 </View>
               </TouchableOpacity>
+              {/* Ads Image  */}
+              <View style={{alignSelf:'center'}}>
+              <Carousel
+                loop
+                width={width - moderateScale(30)}
+                height={moderateScale(150)}
+                autoPlay={true}
+                data={adsImages}
+                scrollAnimationDuration={1000}
+                renderItem={({ item }) => (
+                  <Image
+                    source={item}
+                    resizeMode="stretch"
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      borderRadius: moderateScale(10),
+                    }}
+                  />
+                )}
+              />
+               </View>
             </>
           )}
         </>
@@ -224,4 +247,3 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
-

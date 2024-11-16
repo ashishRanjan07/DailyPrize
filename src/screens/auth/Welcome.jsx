@@ -24,7 +24,7 @@ const Welcome = () => {
     
         <Image
           source={ImagePath.logo}
-          resizeMode="contain"
+          resizeMode="cover"
           style={styles.imageStyle}
         />
         <Text style={styles.text}>START</Text>
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   },
   imageStyle: {
     width: '100%',
-    height: '40%',
+    height: '30%',
   },
   text: {
     fontFamily: FontFamily.Lalezar,

@@ -37,7 +37,7 @@ const Registration = () => {
     <View style={styles.main}>
       <StatusBar backgroundColor={Color.white} barStyle={'dark-content'} />
       <SafeAreaView style={{backgroundColor: Color.white}} />
-      <ScrollView style={{}}>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View
           style={{
             marginVertical: moderateScaleVertical(25),
@@ -53,7 +53,7 @@ const Registration = () => {
             style={{width: '80%', height: moderateScale(250)}}
           />
           <View style={styles.textInputBoxHolder}>
-            <Feather name="user" color={Color.orange} size={textScale(25)} />
+            <Feather name="user" color={Color.orange} size={textScale(20)} />
             <TextInput
               placeholder="Name"
               placeholderTextColor={Color.textGray}
@@ -64,7 +64,7 @@ const Registration = () => {
             />
           </View>
           <View style={styles.textInputBoxHolder}>
-            <Feather name="mail" color={Color.orange} size={textScale(25)} />
+            <Feather name="mail" color={Color.orange} size={textScale(20)} />
             <TextInput
               placeholder="Email"
               placeholderTextColor={Color.textGray}
@@ -78,7 +78,7 @@ const Registration = () => {
             <Feather
               name="smartphone"
               color={Color.orange}
-              size={textScale(35)}
+              size={textScale(20)}
             />
             <TextInput
               placeholder="Mobile Number"
@@ -90,7 +90,7 @@ const Registration = () => {
             />
           </View>
           <View style={styles.textInputBoxHolder}>
-            <Feather name="lock" color={Color.orange} size={textScale(25)} />
+            <Feather name="lock" color={Color.orange} size={textScale(20)} />
             <TextInput
               placeholder="Password"
               placeholderTextColor={Color.textGray}
@@ -102,7 +102,7 @@ const Registration = () => {
             />
           </View>
           <View style={styles.textInputBoxHolder}>
-            <Entypo name="code" color={Color.orange} size={textScale(25)} />
+            <Entypo name="code" color={Color.orange} size={textScale(20)} />
             <TextInput
               placeholder="Referral Code"
               placeholderTextColor={Color.textGray}
@@ -118,7 +118,7 @@ const Registration = () => {
             <MaterialCommunityIcons
               name={selected ? 'checkbox-outline' : 'checkbox-blank-outline'}
               color={Color.black}
-              size={textScale(25)}
+              size={textScale(20)}
             />
             <Text style={styles.text}>Terms and Conditions</Text>
           </TouchableOpacity>
@@ -147,7 +147,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderColor: Color.textGray,
     borderRadius: moderateScale(10),
-    paddingHorizontal: moderateScale(5),
+    padding:moderateScale(5),
+    paddingHorizontal: moderateScale(10),
   },
 
   textInput: {

@@ -1,42 +1,46 @@
-import { Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import React, { useState, useEffect, useRef } from 'react';
-import { ScratchCard } from 'rn-scratch-card';
+import {Image, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import React, {useState, useEffect, useRef} from 'react';
+import {ScratchCard} from 'rn-scratch-card';
 import Color from '../../utils/Colors';
-import { moderateScale, moderateScaleVertical, textScale } from '../../utils/Responsive';
-import { ImagePath } from '../../utils/ImagePath';
+import {
+  moderateScale,
+  moderateScaleVertical,
+  textScale,
+} from '../../utils/Responsive';
+import {ImagePath} from '../../utils/ImagePath';
 import FontFamily from '../../utils/FontFamily';
 
-const ScratchCardContainer = ({ setActiveSection }) => {
+const ScratchCardContainer = ({setActiveSection}) => {
   const [point, setPoint] = useState(0);
   const [scratchComplete, setScratchComplete] = useState(false);
   const [nextButtonVisible, setNextButtonVisible] = useState(false);
-  const [remainingTime, setRemainingTime] = useState(60); 
-  const [timerActive, setTimerActive] = useState(true); 
-  const [cardKey, setCardKey] = useState(0); 
+  const [remainingTime, setRemainingTime] = useState(60);
+  const [timerActive, setTimerActive] = useState(true);
+  const [cardKey, setCardKey] = useState(0);
   const intervalRef = useRef(null);
 
-  const handleScratch = (isScratched) => {
+  const handleScratch = isScratched => {
     if (isScratched && !scratchComplete) {
       setScratchComplete(true);
-      setPoint((prevPoint) => prevPoint + 20); 
-      setNextButtonVisible(true); 
+      setPoint(prevPoint => prevPoint + 20);
+      setNextButtonVisible(true);
     }
   };
 
   const handleNext = () => {
-    setScratchComplete(false); 
-    setNextButtonVisible(false); 
-    setCardKey((prevKey) => prevKey + 1); 
+    setScratchComplete(false);
+    setNextButtonVisible(false);
+    setCardKey(prevKey => prevKey + 1);
   };
 
   useEffect(() => {
     if (timerActive) {
       intervalRef.current = setInterval(() => {
-        setRemainingTime((prevTime) => {
+        setRemainingTime(prevTime => {
           if (prevTime <= 1) {
             clearInterval(intervalRef.current);
             setTimerActive(false);
-            setActiveSection(null); // Reset active section when time runs out
+            setActiveSection(null); 
             return 0;
           }
           return prevTime - 1;
@@ -44,47 +48,42 @@ const ScratchCardContainer = ({ setActiveSection }) => {
       }, 1000);
     }
 
-    return () => clearInterval(intervalRef.current); 
+    return () => clearInterval(intervalRef.current);
   }, [timerActive]);
 
   useEffect(() => {
     if (!timerActive) {
-      setNextButtonVisible(false); 
+      setNextButtonVisible(false);
     }
   }, [timerActive]);
 
   return (
     <>
-      
-        <View style={styles.balanceHolder}>
-          <Image
-            source={ImagePath.timer}
-            resizeMode="contain"
-            style={styles.timerImageHolder}
-          />
-          <Text style={styles.text}>Your wallet Point: {point}</Text>
-        </View>
+      <View style={styles.balanceHolder}>
+        <Image
+          source={ImagePath.timer}
+          resizeMode="contain"
+          style={styles.timerImageHolder}
+        />
+        <Text style={styles.text}>Your wallet Point: {point}</Text>
+      </View>
 
-<Text style={styles.text2}>Your Remaining time {remainingTime}</Text>
-    
+      <Text style={styles.text2}>Your Remaining time {remainingTime}</Text>
 
       <View style={styles.container}>
         <Image
           source={require('./scratch_background.png')}
           style={styles.background_view}
         />
-        
-       
         <ScratchCard
-          key={cardKey} 
-          source={require('./scratch_foreground.png')}
+          key={cardKey}
+          source={ImagePath.scratchCard}
           brushWidth={50}
-          onScratch={(scratched) => handleScratch(scratched)} 
+          onScratch={scratched => handleScratch(scratched)}
           style={styles.scratch_card}
         />
       </View>
 
-      
       {nextButtonVisible && (
         <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
           <Text style={styles.nextButtonText}>Next</Text>
@@ -117,12 +116,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   balanceHolder: {
-    borderWidth: 2,
     width: '90%',
     alignSelf: 'center',
     borderRadius: moderateScale(10),
-    backgroundColor: Color.red,
-    borderColor: Color.red,
     height: moderateScale(100),
     alignItems: 'center',
     justifyContent: 'center',
@@ -134,7 +130,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontFamily: FontFamily.Inter_Medium,
-    color: Color.white,
+    color: Color.red,
     fontSize: textScale(16),
   },
   timerContainer: {
@@ -151,12 +147,12 @@ const styles = StyleSheet.create({
     borderRadius: moderateScale(8),
   },
   nextButton: {
-    borderWidth:2,
-    borderColor:Color.borderColor,
-    width:'80%',
-    alignItems:'center',
+    borderWidth: 2,
+    borderColor: Color.borderColor,
+    width: '80%',
+    alignItems: 'center',
     backgroundColor: Color.borderColor,
-    borderStyle:'dashed',
+    borderStyle: 'dashed',
     padding: moderateScale(10),
     borderRadius: moderateScale(8),
     marginBottom: moderateScale(10),
@@ -167,11 +163,10 @@ const styles = StyleSheet.create({
     color: Color.blue,
     fontSize: textScale(16),
   },
-  text2:{
-    fontFamily:FontFamily.Inter_Medium,
-    color:Color.blue,
-    textAlign:'center',
-    marginTop:moderateScaleVertical(10)
-  }
+  text2: {
+    fontFamily: FontFamily.Inter_Medium,
+    color: Color.blue,
+    textAlign: 'center',
+    marginTop: moderateScaleVertical(10),
+  },
 });
-
