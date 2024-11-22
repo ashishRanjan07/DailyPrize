@@ -27,6 +27,7 @@ import Carousel from 'react-native-reanimated-carousel';
 import {showMessage} from 'react-native-flash-message';
 import {fetchAllVoucher, fetchBannerImage} from '../../api/auth_api';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Header from '../../component/Header';
 
 const Home = () => {
   const navigation = useNavigation();
@@ -98,26 +99,7 @@ const Home = () => {
     <View style={styles.main}>
       <SafeAreaView style={{backgroundColor: Color.white}} />
       <StatusBar backgroundColor={Color.white} barStyle={'dark-content'} />
-      {/* Header Holder */}
-      <View style={styles.headerHolder}>
-        <View style={styles.headerFirstView}>
-          <Ionicons name="wallet" color={Color.red} size={textScale(25)} />
-          <Text style={styles.amountText}>{userPoints}</Text>
-        </View>
-        <Image
-          source={ImagePath.logo}
-          resizeMode="contain"
-          style={styles.logo}
-        />
-
-        <TouchableOpacity style={{width: '25%', alignItems: 'center'}}>
-          <MaterialCommunityIcons
-            name="bell-badge"
-            size={textScale(30)}
-            color={Color.red}
-          />
-        </TouchableOpacity>
-      </View>
+      <Header />
       {/* View Holder */}
       <View style={styles.nameHolder}>
         <Text style={styles.nameText}>Welcome Ashish Ranjan</Text>
@@ -215,29 +197,11 @@ const styles = StyleSheet.create({
     fontSize: textScale(18),
     color: Color.blue,
   },
-  headerHolder: {
-    height: moderateScale(75),
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: moderateScale(15),
-  },
-  headerFirstView: {
-    width: '25%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: moderateScale(10),
-    flexDirection: 'row',
-    gap: moderateScale(10),
-  },
   timerImage: {
     width: moderateScale(25),
     height: moderateScale(25),
   },
-  logo: {
-    width: moderateScale(120),
-    height: moderateScale(129),
-  },
+
   addCouponHolder: {
     borderWidth: 2,
     marginVertical: moderateScaleVertical(20),

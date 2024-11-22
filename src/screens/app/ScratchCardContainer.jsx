@@ -1,4 +1,11 @@
-import {Image, StyleSheet, Text, View, TouchableOpacity, Alert} from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import React, {useState, useEffect, useRef} from 'react';
 import {ScratchCard} from 'rn-scratch-card';
 import Color from '../../utils/Colors';
@@ -10,7 +17,8 @@ import {
 import {ImagePath} from '../../utils/ImagePath';
 import FontFamily from '../../utils/FontFamily';
 import {gameRunDuration} from '../../api/auth_api';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
+import Header from '../../component/Header';
 
 const ScratchCardContainer = () => {
   const navigation = useNavigation();
@@ -29,46 +37,42 @@ const ScratchCardContainer = () => {
   const fetchGameDuration = async () => {
     try {
       const response = await gameRunDuration();
-      console.log(response, 'Line 28');
+      // console.log(response, 'Line 28');
       if (response?.status_code === 200 && response?.data?.length > 0) {
-        // Ensure the time is a valid number and multiply by 60 to convert to seconds
         const time = response.data[0].time;
         if (typeof time === 'number' && !isNaN(time)) {
-          setRemainingTime(time * 60);  // Set remaining time in seconds
+          setRemainingTime(time * 60);
         } else {
           console.error('Invalid time value:', time);
-          setRemainingTime(60);  // Default time if invalid
+          setRemainingTime(60);
         }
       }
     } catch (error) {
       console.error('Error fetching game duration:', error);
-      setRemainingTime(60);  // Default time in case of an error
+      setRemainingTime(60);
     }
   };
-  
 
-  const handleScratch = (isScratched) => {
-    if (isScratched && !scratchComplete && !hasScratched) {
+  const handleScratch = isScratched => {
+    console.log("hii")
+    if (isScratched  && !hasScratched) {
       setScratchComplete(true);
-      setPoint((prevPoint) => prevPoint + 20);
-      setHasScratched(true);  // Mark card as scratched
+      setPoint(prevPoint => prevPoint + 20);
+      setHasScratched(true); 
       setNextButtonVisible(true);
+      console.log("hii2")
     }
   };
 
   const handleNext = () => {
-    // setScratchComplete(false);
-    // setNextButtonVisible(false);
-    // setCardKey((prevKey) => prevKey + 1);
-    // setHasScratched(false); // Reset for the next round
-    Alert.alert("Success","Scratch Successfully");
-    navigation.navigate('Home')
+    Alert.alert('Success', 'Scratch Successfully');
+    navigation.navigate('Home');
   };
 
   useEffect(() => {
     if (timerActive) {
       intervalRef.current = setInterval(() => {
-        setRemainingTime((prevTime) => {
+        setRemainingTime(prevTime => {
           if (prevTime <= 1) {
             clearInterval(intervalRef.current);
             setTimerActive(false);
@@ -89,7 +93,8 @@ const ScratchCardContainer = () => {
   }, [timerActive]);
 
   return (
-    <>
+    <View style={{flex:1,backgroundColor:Color.white}}>
+      <Header/>
       <View style={styles.balanceHolder}>
         <Image
           source={ImagePath.timer}
@@ -99,7 +104,7 @@ const ScratchCardContainer = () => {
         <Text style={styles.text}>Your wallet Point: {point}</Text>
       </View>
 
-      <Text style={styles.text2}>Your Remaining time: {remainingTime}s</Text>  
+      <Text style={styles.text2}>Your Remaining time: {remainingTime}s</Text>
 
       <View style={styles.container}>
         <Image
@@ -110,9 +115,9 @@ const ScratchCardContainer = () => {
           key={cardKey}
           source={ImagePath.scratchCard}
           brushWidth={50}
-          onScratch={(scratched) => handleScratch(scratched)}
+          onScratch={scratched => handleScratch(scratched)}
           style={styles.scratch_card}
-          disabled={hasScratched || !timerActive}  
+          disabled={hasScratched || !timerActive}
         />
       </View>
 
@@ -121,10 +126,9 @@ const ScratchCardContainer = () => {
           <Text style={styles.nextButtonText}>Next</Text>
         </TouchableOpacity>
       )}
-    </>
+    </View>
   );
 };
-
 
 export default ScratchCardContainer;
 

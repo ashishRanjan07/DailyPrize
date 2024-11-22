@@ -24,6 +24,8 @@ import FontFamily from '../../utils/FontFamily';
 import CustomButton from '../../component/CustomButton';
 import {useNavigation} from '@react-navigation/native';
 import {showMessage} from 'react-native-flash-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {registration} from '../../api/auth_api';
 
 const Registration = () => {
   const [mobile, setMobile] = useState('');
@@ -102,12 +104,40 @@ const Registration = () => {
       });
       return null;
     }
-    showMessage({
-      type: 'success',
-      message: 'Account Created Successfully, Please login',
-      icon: 'success',
-    });
-    navigation.navigate('Login');
+    // keys, name,email,mobile,referralCode,password,fcm_token;
+    try {
+      const fcm_token = await AsyncStorage.getItem('fcmToken');
+      const data = {
+        name: name,
+        email: email,
+        mobile: mobile,
+        referralCode: refer,
+        password: password,
+        fcm_token: fcm_token,
+      };
+      const response = await registration(data);
+      console.log(response, 'Line 119');
+      if (response.status_code === 200) {
+        showMessage({
+          type: 'success',
+          message: 'Account Created Successfully, Please login',
+          icon: 'success',
+        });
+        navigation.navigate('Login');
+      } else if (response.status_code === 500) {
+        showMessage({
+          type: 'warning',
+          icon: 'warning',
+          message: response?.message,
+        });
+      }
+    } catch (error) {
+      showMessage({
+        type: 'warning',
+        icon: 'warning',
+        message: error,
+      });
+    }
   };
 
   return (

@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Color from '../../utils/Colors';
-import {ImagePath} from '../../utils/ImagePath';
 import {
   moderateScale,
   moderateScaleVertical,
@@ -22,11 +21,21 @@ import FontFamily from '../../utils/FontFamily';
 import CustomButton from '../../component/CustomButton';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {showMessage} from 'react-native-flash-message';
-import {deposit, withdrawal} from '../../api/auth_api';
+import {
+  deposit,
+  fetchCoinBalanceCount,
+  qrCode,
+  withdrawal,
+} from '../../api/auth_api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Header from '../../component/Header';
+import {useIsFocused} from '@react-navigation/native';
 
 const Wallet = () => {
+  const focus = useIsFocused();
+  const [coinBalance, setCoinBalance] = useState(0);
   const [userid, setUserId] = useState(null);
+  const [imageUrl, setImageUrl] = useState('');
   const [amount, setAmount] = useState('');
   const [transactionId, setTransactionId] = useState('');
   const [phone, setPhone] = useState('');
@@ -36,7 +45,45 @@ const Wallet = () => {
   const indianMobileRegex = /^(\+91|91|0)?[6-9]\d{9}$/;
   useEffect(() => {
     fetchUserData();
+    fetchQRImage();
   }, []);
+
+  useEffect(() => {
+    fetchCoinBalance();
+  }, [focus]);
+
+  const fetchCoinBalance = async () => {
+    try {
+      const userData = await AsyncStorage.getItem('userData');
+      const parsedData = JSON.parse(userData);
+      const data = {
+        id: parsedData?.id,
+      };
+      const response = await fetchCoinBalanceCount(data);
+      if (response?.status_code === 200) {
+        setCoinBalance(response?.data?.[0]?.wallet);
+      }
+    } catch (error) {
+      console.log(error, 'Line 22');
+    }
+  };
+
+  const fetchQRImage = async () => {
+    try {
+      const response = await qrCode();
+      if (response?.status_code === 200) {
+        setImageUrl(
+          `https://gameadmin.igvault.cloud/${response?.data?.[0]?.q_code_image}`,
+        );
+      }
+    } catch (error) {
+      showMessage({
+        type: 'warning',
+        icon: 'warning',
+        message: error,
+      });
+    }
+  };
 
   const fetchUserData = async () => {
     try {
@@ -179,27 +226,16 @@ const Wallet = () => {
       setWithDrawalAmount('');
       setUpiId('');
     }
-    // showMessage({
-    //   type: 'success',
-    //   icon: 'success',
-    //   message: 'Your request is submitted successfully. please wait for 24hrs.',
-    // });
-    // setWithDrawalAmount('');
-    // setUpiId('');
   };
 
   return (
     <ScrollView style={styles.main}>
       <SafeAreaView style={{backgroundColor: Color.white}} />
       <StatusBar barStyle={'dark-content'} backgroundColor={Color.white} />
-      <Image
-        source={ImagePath.logo}
-        resizeMode="cover"
-        style={styles.imageStyle}
-      />
+      <Header />
       <View style={styles.balanceHolder}>
         <Ionicons name="wallet" size={textScale(30)} color={Color.yellow} />
-        <Text style={styles.text}>Your wallet Coin balance 400 </Text>
+        <Text style={styles.text}>Your wallet Coin balance {coinBalance} </Text>
       </View>
       <View style={styles.buttonView}>
         <TouchableOpacity
@@ -227,9 +263,9 @@ const Wallet = () => {
         <View style={styles.contentHolder}>
           <Text style={styles.text2}>Recharge your wallet</Text>
           <Image
-            source={ImagePath.Qr}
-            resizeMode="cover"
-            style={{width: moderateScale(100), height: moderateScale(100)}}
+            source={{uri: imageUrl}}
+            resizeMode="contain"
+            style={{width: moderateScale(150), height: moderateScale(150)}}
           />
           <TextInput
             placeholder="Enter Amount"

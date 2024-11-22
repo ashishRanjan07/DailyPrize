@@ -24,6 +24,7 @@ import CustomButton from '../../component/CustomButton';
 import Share from 'react-native-share';
 import {showMessage} from 'react-native-flash-message';
 import {useNavigation} from '@react-navigation/native';
+import Header from '../../component/Header';
 
 const Refer = () => {
   const navigation = useNavigation();
@@ -61,6 +62,7 @@ const Refer = () => {
     <View style={styles.main}>
       <StatusBar backgroundColor={Color.white} barStyle={'dark-content'} />
       <SafeAreaView style={{backgroundColor: Color.white}} />
+      <Header/>
       <Image
         source={ImagePath.logo}
         resizeMode="cover"

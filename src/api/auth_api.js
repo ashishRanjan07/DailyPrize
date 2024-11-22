@@ -1,14 +1,23 @@
 import {
+  ADD_POINTS,
+  COIN_BALANCE,
   CONTACT_US,
   DEPOSIT,
+  DEPOSIT_HISTORY,
   FETCH_ALL_COUPON,
   FETCH_BANNER_IMAGE,
   FETCH_LEADERBOARD,
+  FETCH_QR_IMAGE,
   FETCH_REWARD,
   GAME_RUN_DURATION,
+  NOTIFICATION,
+  POINT_HISTORY,
+  REGISTRATION,
+  SCRATCH_RANDOM_POINT,
   SEARCH_TIME,
   VALIDATE_LOGIN,
   WITHDRAWAL,
+  WITHDRAWAL_HISTORY,
 } from './API_Services';
 
 export const validateLogin = async data => {
@@ -140,6 +149,132 @@ export const timer = async data => {
 export const gameRunDuration = async () => {
   try {
     const response = await GAME_RUN_DURATION();
+    if (!response) {
+      return `Can't connect to server`;
+    } else if (response?.error === true) {
+      return response;
+    } else {
+      return response;
+    }
+  } catch (error) {
+    return error.message;
+  }
+};
+export const scratchRandomPoint = async data => {
+  try {
+    const response = await SCRATCH_RANDOM_POINT(data);
+    if (!response) {
+      return `Can't connect to server`;
+    } else if (response?.error === true) {
+      return response;
+    } else {
+      return response;
+    }
+  } catch (error) {
+    return error.message;
+  }
+};
+export const registration = async data => {
+  try {
+    const response = await REGISTRATION(data);
+    if (!response) {
+      return `Can't connect to server`;
+    } else if (response?.error === true) {
+      return response;
+    } else {
+      return response;
+    }
+  } catch (error) {
+    return error.message;
+  }
+};
+export const fetchCoinBalanceCount = async data => {
+  try {
+    const response = await COIN_BALANCE(data);
+    if (!response) {
+      return `Can't connect to server`;
+    } else if (response?.error === true) {
+      return response;
+    } else {
+      return response;
+    }
+  } catch (error) {
+    return error.message;
+  }
+};
+export const pointHistory = async data => {
+  try {
+    const response = await POINT_HISTORY(data);
+    if (!response) {
+      return `Can't connect to server`;
+    } else if (response?.error === true) {
+      return response;
+    } else {
+      return response;
+    }
+  } catch (error) {
+    return error.message;
+  }
+};
+export const depositHistory = async data => {
+  try {
+    const response = await DEPOSIT_HISTORY(data);
+    if (!response) {
+      return `Can't connect to server`;
+    } else if (response?.error === true) {
+      return response;
+    } else {
+      return response;
+    }
+  } catch (error) {
+    return error.message;
+  }
+};
+export const withdrawalHistory = async data => {
+  try {
+    const response = await WITHDRAWAL_HISTORY(data);
+    if (!response) {
+      return `Can't connect to server`;
+    } else if (response?.error === true) {
+      return response;
+    } else {
+      return response;
+    }
+  } catch (error) {
+    return error.message;
+  }
+};
+export const qrCode = async () => {
+  try {
+    const response = await FETCH_QR_IMAGE();
+    if (!response) {
+      return `Can't connect to server`;
+    } else if (response?.error === true) {
+      return response;
+    } else {
+      return response;
+    }
+  } catch (error) {
+    return error.message;
+  }
+};
+export const notificationData = async () => {
+  try {
+    const response = await NOTIFICATION();
+    if (!response) {
+      return `Can't connect to server`;
+    } else if (response?.error === true) {
+      return response;
+    } else {
+      return response;
+    }
+  } catch (error) {
+    return error.message;
+  }
+};
+export const addPoints = async data => {
+  try {
+    const response = await ADD_POINTS(data);
     if (!response) {
       return `Can't connect to server`;
     } else if (response?.error === true) {
