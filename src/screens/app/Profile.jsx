@@ -21,11 +21,34 @@ import FontFamily from '../../utils/FontFamily';
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { useNavigation } from '@react-navigation/native';
-
+import {useNavigation} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Profile = () => {
   const navigation = useNavigation();
+  const handleLogout = async() => {
+    await AsyncStorage.removeItem('userData');
+    navigation.replace('Splash')
+  };
+
+  const showLogoutAlert = () => {
+    Alert.alert(
+      'Logout', 
+      'Are you sure you want to logout?', 
+      [
+        {
+          text: 'Cancel', 
+          onPress: () => console.log('Logout cancelled'), 
+          style: 'cancel',
+        },
+        {
+          text: 'OK', 
+          onPress: handleLogout, 
+        },
+      ],
+      {cancelable: true} 
+    );
+  };
 
   return (
     <View style={styles.main}>
@@ -34,7 +57,7 @@ const Profile = () => {
       <Image
         source={ImagePath.logo}
         resizeMode="cover"
-        style={{width: moderateScale(150), height: moderateScale(150)}}
+        style={{width: moderateScale(250), height: moderateScale(150)}}
       />
       <Text style={styles.nameText}>Hello,Ashish Ranjan!</Text>
       <LinearGradient colors={['orange', 'red']} style={styles.gradientBox}>
@@ -49,15 +72,15 @@ const Profile = () => {
           />
         </View>
       </LinearGradient>
-      <TouchableOpacity style={styles.boxHolder} onPress={()=> navigation.navigate('Refer')}>
-        <FontAwesome
-          name="share"
-          color={Color.black}
-          size={textScale(22)}
-        />
+      <TouchableOpacity
+        style={styles.boxHolder}
+        onPress={() => navigation.navigate('Refer')}>
+        <FontAwesome name="share" color={Color.black} size={textScale(22)} />
         <Text style={styles.text}>Refer and Earn</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.boxHolder}>
+      <TouchableOpacity
+        style={styles.boxHolder}
+        onPress={() => navigation.navigate('Privacy policy')}>
         <MaterialIcons
           name="security"
           color={Color.black}
@@ -65,11 +88,15 @@ const Profile = () => {
         />
         <Text style={styles.text}>Privacy Policy</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.boxHolder}>
+      <TouchableOpacity
+        style={styles.boxHolder}
+        onPress={() => navigation.navigate('Terms And Conditions')}>
         <MaterialIcons name="policy" color={Color.black} size={textScale(22)} />
         <Text style={styles.text}>Terms and Condition</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.boxHolder}>
+      <TouchableOpacity
+        style={styles.boxHolder}
+        onPress={() => navigation.navigate('Contact us')}>
         <MaterialIcons
           name="contact-support"
           color={Color.black}
@@ -79,7 +106,7 @@ const Profile = () => {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.boxHolder}
-        onPress={() => Alert.alert('Logout', 'Are you sure want to logout?')}>
+      onPress={showLogoutAlert}>
         <MaterialIcons name="logout" color={Color.black} size={textScale(22)} />
         <Text style={styles.text}>Logout</Text>
       </TouchableOpacity>
@@ -113,9 +140,9 @@ const styles = StyleSheet.create({
     color: Color.white,
     fontSize: textScale(18),
     fontFamily: FontFamily.Inter_Medium,
-    lineHeight:scale(30),
-    textAlign:'center',
-    letterSpacing:scale(1)
+    lineHeight: scale(30),
+    textAlign: 'center',
+    letterSpacing: scale(1),
   },
   text: {
     fontFamily: FontFamily.Inter_SemiBold,

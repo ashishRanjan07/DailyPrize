@@ -9,6 +9,10 @@ import BottomNavigation from './BottomNavigation';
 import AddCoupon from '../screens/app/AddCoupon';
 import ScratchCardContainer from '../screens/app/ScratchCardContainer';
 import Refer from '../screens/app/Refer';
+import PrivacyPolicy from '../screens/app/PrivacyPolicy';
+import TermAndCondition from '../screens/app/TermAndCondition';
+import ContactUs from '../screens/app/ContactUs';
+import AddRoom from '../screens/app/AddRoom';
 
 const Stack = createNativeStackNavigator();
 
@@ -23,6 +27,10 @@ const AuthNavigation = () => {
     <Stack.Screen name='BottomNavigation' component={BottomNavigation}/>
     <Stack.Screen name='Add Coupon' component={AddCoupon} options={{headerShown:true}}/>
     <Stack.Screen name='Scratch Card' component={ScratchCardContainer} options={{headerShown:true}}/>
+    <Stack.Screen name='Privacy policy' component={PrivacyPolicy} options={{headerShown:true}}/>
+    <Stack.Screen name='Terms And Conditions' component={TermAndCondition} options={{headerShown:true}}/>
+    <Stack.Screen name='Contact us' component={ContactUs} options={{headerShown:true}}/>
+    <Stack.Screen name='Join Room List' component={AddRoom} options={{headerShown:true}}/>
     
   </Stack.Navigator>
   )

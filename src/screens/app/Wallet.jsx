@@ -1,4 +1,5 @@
 import {
+  Alert,
   Image,
   SafeAreaView,
   ScrollView,
@@ -9,7 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Color from '../../utils/Colors';
 import {ImagePath} from '../../utils/ImagePath';
 import {
@@ -19,18 +20,173 @@ import {
 } from '../../utils/Responsive';
 import FontFamily from '../../utils/FontFamily';
 import CustomButton from '../../component/CustomButton';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import {showMessage} from 'react-native-flash-message';
+import {deposit, withdrawal} from '../../api/auth_api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Wallet = () => {
+  const [userid, setUserId] = useState(null);
   const [amount, setAmount] = useState('');
-  const [trasactionId, setTransactionId] = useState('');
+  const [transactionId, setTransactionId] = useState('');
   const [phone, setPhone] = useState('');
   const [selected, setSelected] = useState('Deposit');
   const [withDrawalAmount, setWithDrawalAmount] = useState('');
-  const [accountNumber, setAccountNumber] = useState('');
-  const [IFSC, setIfsc] = useState('');
   const [upiId, setUpiId] = useState('');
-  const [withDrawalMethod, setWithDrawalMethod] = useState('Bank Details');
+  const indianMobileRegex = /^(\+91|91|0)?[6-9]\d{9}$/;
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  const fetchUserData = async () => {
+    try {
+      const userData = await AsyncStorage.getItem('userData');
+      if (userData) {
+        const parsedData = JSON.parse(userData);
+        setUserId(parsedData?.id);
+      } else {
+        console.log('No user data found');
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
+
+  const handleRecharge = async () => {
+    if (amount.trim() === '') {
+      showMessage({
+        type: 'warning',
+        icon: 'warning',
+        message: 'Please enter the amount to Deposit',
+      });
+      return null;
+    }
+    if (transactionId.trim() === '') {
+      showMessage({
+        type: 'warning',
+        icon: 'warning',
+        message: 'Please enter the transaction ID',
+      });
+      return null;
+    }
+    if (phone.trim() === '') {
+      showMessage({
+        type: 'warning',
+        icon: 'warning',
+        message: 'Please enter the phone number',
+      });
+      return null;
+    }
+    if (!indianMobileRegex.test(phone)) {
+      showMessage({
+        type: 'warning',
+        message: 'Please enter the Valid Mobile number',
+        icon: 'warning',
+      });
+      return null;
+    }
+    try {
+      const today = new Date();
+      const formattedDate = `${String(today.getDate()).padStart(
+        2,
+        '0',
+      )}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(
+        today.getFullYear(),
+      ).slice(-2)}`;
+
+      const data = {
+        user_id: userid,
+        date: formattedDate,
+        remark: 'Make Payment',
+        amount: amount,
+        tranjaction_id: transactionId,
+        phone_number: phone,
+      };
+      const response = await deposit(data);
+      if (response?.status_code === 200) {
+        showMessage({
+          type: 'success',
+          message:
+            'Your request is submitted successfully. Please wait for max 24hrs to reflect the amount in wallet',
+          icon: 'success',
+        });
+      } else {
+        Alert.alert('Error', 'Server Problem');
+      }
+    } catch (error) {
+      showMessage({
+        type: 'warning',
+        message: error,
+        icon: 'warning',
+      });
+    } finally {
+      setAmount('');
+      setTransactionId('');
+      setPhone('');
+    }
+  };
+
+  const handleWithdraw = async () => {
+    if (withDrawalAmount.trim() === '') {
+      showMessage({
+        type: 'warning',
+        icon: 'warning',
+        message: 'Please enter the amount to Withdraw',
+      });
+      return null;
+    }
+    if (upiId.trim() === '') {
+      showMessage({
+        type: 'warning',
+        icon: 'warning',
+        message: 'Please enter the upiId to Withdraw',
+      });
+      return null;
+    }
+    try {
+      const today = new Date();
+      const formattedDate = `${String(today.getDate()).padStart(
+        2,
+        '0',
+      )}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(
+        today.getFullYear(),
+      ).slice(-2)}`;
+      const data = {
+        user_id: userid,
+        date: formattedDate,
+        remark: 'Withdrawal Request',
+        amount: withDrawalAmount,
+        upi_id: upiId,
+      };
+      const response = await withdrawal(data);
+      if (response?.status_code === 200) {
+        showMessage({
+          type: 'success',
+          icon: 'success',
+          message:
+            'Your request is submitted successfully. please wait for 24hrs.',
+        });
+      } else {
+        Alert.alert('Error', 'Something went wrong');
+      }
+    } catch (error) {
+      showMessage({
+        type: 'danger',
+        icon: 'danger',
+        message: 'Please try again!',
+      });
+    } finally {
+      setWithDrawalAmount('');
+      setUpiId('');
+    }
+    // showMessage({
+    //   type: 'success',
+    //   icon: 'success',
+    //   message: 'Your request is submitted successfully. please wait for 24hrs.',
+    // });
+    // setWithDrawalAmount('');
+    // setUpiId('');
+  };
 
   return (
     <ScrollView style={styles.main}>
@@ -42,22 +198,27 @@ const Wallet = () => {
         style={styles.imageStyle}
       />
       <View style={styles.balanceHolder}>
-        <Image
-          source={ImagePath.timer}
-          resizeMode="cover"
-          style={styles.timerImageHolder}
-        />
-        <Text style={styles.text}>Your wallet balance ₹400 </Text>
+        <Ionicons name="wallet" size={textScale(30)} color={Color.yellow} />
+        <Text style={styles.text}>Your wallet Coin balance 400 </Text>
       </View>
       <View style={styles.buttonView}>
         <TouchableOpacity
-          style={styles.buttonHolder}
+          style={[
+            styles.buttonHolder,
+            {
+              borderBottomWidth: selected === 'Deposit' ? 2 : 0,
+              borderColor: Color.black,
+            },
+          ]}
           onPress={() => setSelected('Deposit')}>
           <Text style={styles.buttonText}>Deposit</Text>
         </TouchableOpacity>
         <Text style={styles.buttonText}>|</Text>
         <TouchableOpacity
-          style={styles.buttonHolder}
+          style={[
+            styles.buttonHolder,
+            {borderBottomWidth: selected === 'Withdrawal' ? 2 : 0},
+          ]}
           onPress={() => setSelected('Withdrawal')}>
           <Text style={styles.buttonText}>Withdrawal</Text>
         </TouchableOpacity>
@@ -67,8 +228,8 @@ const Wallet = () => {
           <Text style={styles.text2}>Recharge your wallet</Text>
           <Image
             source={ImagePath.Qr}
-            resizeMode="contain"
-            style={{width: moderateScale(150), height: moderateScale(125)}}
+            resizeMode="cover"
+            style={{width: moderateScale(100), height: moderateScale(100)}}
           />
           <TextInput
             placeholder="Enter Amount"
@@ -80,8 +241,8 @@ const Wallet = () => {
           />
           <TextInput
             placeholder="Enter Transaction ID"
-            value={trasactionId}
-            keyboardType="number-pad"
+            value={transactionId}
+            keyboardType="default"
             placeholderTextColor={Color.textGray}
             style={styles.textInputBox}
             onChangeText={text => setTransactionId(text)}
@@ -91,20 +252,18 @@ const Wallet = () => {
             value={phone}
             onChangeText={text => setPhone(text)}
             keyboardType="number-pad"
+            maxLength={10}
             placeholderTextColor={Color.textGray}
             style={styles.textInputBox}
           />
-          <View style={{width: '80%'}}>
-            <CustomButton
-              name={'Recharge'}
-              handleAction={() => console.log('Clicked on the Recharge Button')}
-            />
+          <View style={{width: '85%'}}>
+            <CustomButton name={'Recharge'} handleAction={handleRecharge} />
           </View>
         </View>
       )}
       {selected === 'Withdrawal' && (
         <View style={styles.contentHolder}>
-          <Text style={styles.text2}>Withdraw on your account</Text>
+          <Text style={styles.text2}>Withdraw from your account</Text>
           <TextInput
             placeholder="Enter Amount"
             value={withDrawalAmount}
@@ -113,67 +272,19 @@ const Wallet = () => {
             placeholderTextColor={Color.textGray}
             style={styles.textInputBox}
           />
-          <TouchableOpacity
-            style={styles.checkBox}
-            onPress={() => setWithDrawalMethod('Bank Details')}>
-            <MaterialCommunityIcons
-              name={
-                withDrawalMethod === 'Bank Details'
-                  ? 'checkbox-outline'
-                  : 'checkbox-blank-outline'
-              }
-              color={Color.black}
-              size={textScale(25)}
-            />
-            <Text style={styles.buttonText}>Bank Details</Text>
-          </TouchableOpacity>
-          {withDrawalMethod === 'Bank Details' && (
-            <>
-              <TextInput
-                placeholder="Account Number"
-                value={accountNumber}
-                keyboardType="number-pad"
-                placeholderTextColor={Color.textGray}
-                style={styles.textInputBox}
-                onChangeText={text => setAccountNumber(text)}
-              />
-              <TextInput
-                placeholder="IFSC Code"
-                value={IFSC}
-                onChangeText={text => setIfsc(text)}
-                placeholderTextColor={Color.textGray}
-                style={styles.textInputBox}
-              />
-            </>
-          )}
-          <TouchableOpacity
-            style={styles.checkBox}
-            onPress={() => setWithDrawalMethod('UPI Details')}>
-            <MaterialCommunityIcons
-              name={
-                withDrawalMethod === 'UPI Details'
-                  ? 'checkbox-outline'
-                  : 'checkbox-blank-outline'
-              }
-              color={Color.black}
-              size={textScale(25)}
-            />
+          <View style={{width: '85%'}}>
             <Text style={styles.buttonText}>UPI Details</Text>
-          </TouchableOpacity>
-          {withDrawalMethod === 'UPI Details' && (
+
             <TextInput
               placeholder="UPI ID"
               value={upiId}
               onChangeText={text => setUpiId(text)}
               placeholderTextColor={Color.textGray}
-              style={styles.textInputBox}
+              style={[styles.textInputBox, {width: '100%'}]}
             />
-          )}
+          </View>
           <View style={{width: '80%'}}>
-            <CustomButton
-              name={'WITHDRAW'}
-              handleAction={() => console.log('Clicked on the WITHDRAW Button')}
-            />
+            <CustomButton name={'WITHDRAW'} handleAction={handleWithdraw} />
           </View>
         </View>
       )}
@@ -189,18 +300,19 @@ const styles = StyleSheet.create({
     backgroundColor: Color.white,
   },
   imageStyle: {
-    width: moderateScale(150),
+    width: moderateScale(250),
     height: moderateScale(150),
     alignSelf: 'center',
   },
   text: {
     fontFamily: FontFamily.Inter_Medium,
     color: Color.white,
-    fontSize: textScale(14),
+    fontSize: textScale(15),
   },
   balanceHolder: {
     borderWidth: 2,
     width: '90%',
+    padding: moderateScale(10),
     alignSelf: 'center',
     borderRadius: moderateScale(10),
     backgroundColor: Color.red,
@@ -208,9 +320,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: moderateScale(5),
+    flexDirection: 'row',
   },
   timerImageHolder: {
-    width: moderateScale(50),
+    width: moderateScale(100),
     height: moderateScale(50),
   },
   buttonHolder: {
@@ -224,7 +337,7 @@ const styles = StyleSheet.create({
     padding: moderateScale(3),
   },
   buttonView: {
-    marginVertical: moderateScaleVertical(5),
+    marginVertical: moderateScaleVertical(10),
     width: '90%',
     alignSelf: 'center',
     alignItems: 'center',
@@ -238,19 +351,20 @@ const styles = StyleSheet.create({
   },
   textInputBox: {
     borderWidth: 2,
-    width: '80%',
+    width: '85%',
     fontFamily: FontFamily.Inter_Medium,
-    fontSize: textScale(12),
+    fontSize: textScale(14),
     paddingHorizontal: moderateScale(10),
     color: Color.black,
     borderRadius: moderateScale(5),
     borderColor: Color.textGray,
   },
   contentHolder: {
-    width: '90%',
+    width: '100%',
     alignSelf: 'center',
     alignItems: 'center',
     gap: moderateScale(10),
+    marginTop: moderateScaleVertical(10),
   },
   checkBox: {
     alignItems: 'center',

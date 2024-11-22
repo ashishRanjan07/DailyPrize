@@ -1,5 +1,7 @@
 import {
+  FlatList,
   Image,
+  ImageBackground,
   ScrollView,
   StyleSheet,
   Text,
@@ -16,38 +18,63 @@ import {
 } from '../../utils/Responsive';
 import FontFamily from '../../utils/FontFamily';
 import {ImagePath} from '../../utils/ImagePath';
-import { showMessage } from 'react-native-flash-message';
+import {showMessage} from 'react-native-flash-message';
 
-const AddCoupon = ({ increasePoints, setActiveSection }) => {
+const AddCoupon = ({route}) => {
+  const {data} = route.params;
+  const imageArray = [
+    ImagePath.image1,
+    ImagePath.image2,
+    ImagePath.image4,
+    ImagePath.image6,
+    ImagePath.image8,
+    ImagePath.image10,
+    ImagePath.image12,
+    ImagePath.image13,
+    ImagePath.image14,
+  ];
 
-  const handleAddCoupon = (item) => {
-    increasePoints(item.points); 
+  const handleAdd = async item => {
+    console.log(item, 'line 49');
     showMessage({
-      message: `${item.points} Added!!`,
-      type: "success",
-      icon: 'success'
+      type: 'success',
+      icon: 'success',
+      message: `Coupon of ${item?.name} points are added Successfully`,
     });
-    setActiveSection(null); 
   };
 
+  const renderItem = ({item, index}) => {
+    return (
+      <View style={styles.itemHolder}>
+        <ImageBackground
+          source={imageArray[index]}
+          resizeMode="contain"
+          style={{width: '100%', height: moderateScale(175)}}>
+          <TouchableOpacity
+            style={styles.buttonHolder}
+            onPress={() => handleAdd(item)}>
+            <Text style={styles.text}>Add</Text>
+          </TouchableOpacity>
+        </ImageBackground>
+      </View>
+    );
+  };
   return (
     <View style={styles.main}>
-      <View style={{ width: '95%', overflow: 'hidden' }}>
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          {Data.map(item => (
-            <View style={styles.itemHolder} key={item.id}>
-              <Text style={styles.text}>{item?.points}</Text>
-              <Image
-                source={ImagePath.voucher}
-                resizeMode="cover"
-                style={styles.imageStyle}
-              />
-              <TouchableOpacity style={styles.buttonHolder} onPress={() => handleAddCoupon(item)}>
-                <Text style={styles.buttonText}>Add</Text>
-              </TouchableOpacity>
-            </View>
-          ))}
-        </ScrollView>
+      <View
+        style={{
+          alignItems: 'center',
+          alignSelf: 'center',
+          width: '98%',
+          justifyContent: 'center',
+        }}>
+        <FlatList
+          data={data}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index}
+          showsVerticalScrollIndicator={false}
+          numColumns={2}
+        />
       </View>
     </View>
   );
@@ -64,20 +91,20 @@ const styles = StyleSheet.create({
   },
   itemHolder: {
     borderWidth: 2,
-    width: moderateScale(300),
-    backgroundColor: Color.orange,
-    height: moderateScale(225),
-    marginHorizontal: moderateScale(10),
-    borderRadius: moderateScale(10),
-    borderColor: Color.orange,
+    width: '47%',
+    margin: moderateScale(5),
     alignItems: 'center',
+    borderRadius: moderateScale(5),
+    borderColor: Color.borderColor,
+    backgroundColor: Color.borderColor,
+    alignSelf: 'center',
     justifyContent: 'center',
-    gap: moderateScaleVertical(10),
   },
   text: {
-    fontFamily: FontFamily.Inter_Bold,
-    fontSize: textScale(20),
-    color: Color.blue,
+    fontFamily: FontFamily.Inter_Medium,
+    fontSize: textScale(16),
+    color: Color.white,
+    padding: moderateScale(5),
     textAlign: 'center',
   },
   imageStyle: {
@@ -86,18 +113,19 @@ const styles = StyleSheet.create({
   },
   buttonHolder: {
     borderWidth: 2,
-    width: '80%',
-    alignItems: 'center',
+    bottom: 10,
+    position: 'absolute',
+    width: '75%',
     alignSelf: 'center',
+    backgroundColor: Color.red,
+    borderColor: Color.red,
+    alignItems: 'center',
     borderRadius: moderateScale(5),
-    backgroundColor: Color.borderColor,
-    borderColor: Color.borderColor,
-    borderStyle: 'dotted'
   },
   buttonText: {
     fontFamily: FontFamily.Inter_SemiBold,
     color: Color.blue,
     fontSize: textScale(14),
-    padding: moderateScale(5)
-  }
+    padding: moderateScale(5),
+  },
 });

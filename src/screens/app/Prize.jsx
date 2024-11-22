@@ -1,59 +1,60 @@
-import {StyleSheet, Text, View, FlatList, Image} from 'react-native';
-import React from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  Image,
+  SafeAreaView,
+  StatusBar,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {moderateScale} from '../../utils/Responsive';
+import Color from '../../utils/Colors';
+import {showMessage} from 'react-native-flash-message';
+import {fetchLeaderBoard} from '../../api/auth_api';
 
 const Prize = () => {
-  // Sample leaderboard data
-  const leaderboardData = [
-    {
-      rank: 1,
-      name: 'Alice',
-      points: 1200,
-      avatar: 'https://randomuser.me/api/portraits/women/1.jpg',
-    },
-    {
-      rank: 2,
-      name: 'Bob',
-      points: 1100,
-      avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
-    },
-    {
-      rank: 3,
-      name: 'Charlie',
-      points: 900,
-      avatar: 'https://randomuser.me/api/portraits/men/2.jpg',
-    },
-    {
-      rank: 4,
-      name: 'David',
-      points: 850,
-      avatar: 'https://randomuser.me/api/portraits/men/3.jpg',
-    },
-    {
-      rank: 5,
-      name: 'Eve',
-      points: 800,
-      avatar: 'https://randomuser.me/api/portraits/women/2.jpg',
-    },
-  ];
+  const [leaderboardData, setLeaderBoardData] = useState([]);
+
+  useEffect(() => {
+    fetchLeaderBoardData();
+  }, []);
+
+  const fetchLeaderBoardData = async () => {
+    try {
+      const response = await fetchLeaderBoard();
+      if (response?.status_code === 200) {
+        setLeaderBoardData(response?.data);
+      }
+    } catch (error) {
+      showMessage({
+        type: 'danger',
+        icon: 'danger',
+        message: error,
+      });
+    }
+  };
 
   return (
     <View style={styles.container}>
+      <SafeAreaView />
+      <StatusBar barStyle={'dark-content'} backgroundColor={Color.white} />
       <Text style={styles.headerText}>Leaderboard</Text>
-
       <FlatList
         data={leaderboardData}
         renderItem={({item}) => (
           <View style={styles.rankCard}>
             <Text style={styles.rankText}>{item.rank}</Text>
-            <Image source={{uri: item.avatar}} style={styles.avatar} />
+            <Image
+              source={{uri: 'https://picsum.photos/200/300?grayscale'}}
+              style={styles.avatar}
+            />
             <View style={styles.userInfo}>
               <Text style={styles.userName}>{item.name}</Text>
               <Text style={styles.userPoints}>{item.points} pts</Text>
             </View>
           </View>
         )}
-        keyExtractor={item => item.rank.toString()}
         contentContainerStyle={styles.listContainer}
       />
     </View>
@@ -65,8 +66,7 @@ export default Prize;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f4f4f4',
-    padding: 20,
+    backgroundColor: Color.white,
   },
   headerText: {
     fontSize: 24,
@@ -87,6 +87,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 5,
+    width: '90%',
+    alignSelf: 'center',
   },
   rankText: {
     fontSize: 24,

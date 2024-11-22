@@ -21,14 +21,42 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Clipboard from '@react-native-clipboard/clipboard';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import CustomButton from '../../component/CustomButton';
+import Share from 'react-native-share';
+import {showMessage} from 'react-native-flash-message';
+import {useNavigation} from '@react-navigation/native';
 
 const Refer = () => {
+  const navigation = useNavigation();
   const [copiedText, setCopiedText] = useState('ASHISHRANJAN');
   const [referralCode, setReferralCode] = useState('');
   const copyToClipboard = () => {
     Clipboard.setString(copiedText);
   };
 
+  const handleShareCode = async () => {
+    const customOptions = {
+      message: `Use my referral code: ${copiedText} to earn 500 coins!`,
+      title: 'Refer and Earn',
+    };
+
+    try {
+      await Share.open(customOptions);
+    } catch (err) {
+      if (err && err.message) {
+        console.log('Error while sharing:', err.message);
+      }
+    }
+  };
+
+  const handleReferralCode = async () => {
+    showMessage({
+      type: 'success',
+      icon: 'success',
+      message:
+        'Congratulation Referral Code Applied Successfully. you have earned 500 coins',
+    });
+    navigation.goBack();
+  };
   return (
     <View style={styles.main}>
       <StatusBar backgroundColor={Color.white} barStyle={'dark-content'} />
@@ -65,9 +93,12 @@ const Refer = () => {
             style={styles.inputBox}
           />
         </View>
+        {referralCode.length > 0 && (
+          <CustomButton name={'Apply Code'} handleAction={handleReferralCode} />
+        )}
         <CustomButton
-          name={'Continue'}
-          handleAction={() => console.log('Clicked on the continue button')}
+          name={'Share Referral Code'}
+          handleAction={handleShareCode}
         />
       </View>
     </View>
@@ -82,32 +113,33 @@ const styles = StyleSheet.create({
     backgroundColor: Color.white,
   },
   imageStyle: {
-    width: moderateScale(200),
-    height: moderateScale(200),
+    width: moderateScale(250),
+    height: moderateScale(150),
     alignItems: 'center',
     alignSelf: 'center',
   },
   headerText: {
-    fontFamily: FontFamily.Inter_SemiBold,
-    fontSize: textScale(18),
+    fontFamily: FontFamily.Inter_Bold,
+    fontSize: textScale(16),
     textAlign: 'center',
     color: Color.red,
   },
   subHeaderText: {
-    fontFamily: FontFamily.Inter_Regular,
+    fontFamily: FontFamily.Inter_Medium,
     width: '90%',
-    fontSize: textScale(14),
+    fontSize: textScale(15),
     textAlign: 'center',
     alignSelf: 'center',
     color: Color.black,
+    marginVertical: moderateScaleVertical(10),
   },
   codeHolder: {
     borderWidth: 2,
     marginVertical: moderateScaleVertical(10),
-    width: '80%',
+    width: '90%',
     alignSelf: 'center',
     flexDirection: 'row',
-    paddingHorizontal: moderateScale(10),
+    padding: moderateScale(5),
     borderStyle: 'dashed',
     borderRadius: moderateScale(10),
     borderColor: Color.borderColor,
@@ -126,20 +158,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '90%',
     alignSelf: 'center',
-    gap: moderateScale(10),
+    gap: moderateScale(15),
   },
   referText2: {
     fontFamily: FontFamily.Inter_SemiBold,
-    fontSize: textScale(16),
-    color: Color.blue,
+    fontSize: textScale(15),
+    color: Color.black,
   },
   referCode: {
     borderWidth: 2,
-    width: '90%',
+    width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: moderateScale(10),
     padding: moderateScale(5),
     borderRadius: moderateScale(10),
     borderColor: Color.borderColor,

@@ -1,15 +1,30 @@
 import {Image, StatusBar, StyleSheet, Text, View} from 'react-native';
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 import Color from '../../utils/Colors';
 import {ImagePath} from '../../utils/ImagePath';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Splash = () => {
   const navigation = useNavigation();
 
   useEffect(() => {
+    const checkUserData = async () => {
+      try {
+        const userData = await AsyncStorage.getItem('userData');
+        if (userData) {
+          navigation.replace('BottomNavigation');
+        } else {
+          navigation.replace('Welcome');
+        }
+      } catch (error) {
+        console.log('Error checking user data:', error);
+        navigation.replace('Welcome');
+      }
+    };
+
     setTimeout(() => {
-      navigation.replace('Welcome');
+      checkUserData();
     }, 2000);
   }, []);
 
