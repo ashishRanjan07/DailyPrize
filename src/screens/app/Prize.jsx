@@ -12,6 +12,7 @@ import {moderateScale} from '../../utils/Responsive';
 import Color from '../../utils/Colors';
 import {showMessage} from 'react-native-flash-message';
 import {fetchLeaderBoard} from '../../api/auth_api';
+import Header from '../../component/Header';
 
 const Prize = () => {
   const [leaderboardData, setLeaderBoardData] = useState([]);
@@ -39,7 +40,7 @@ const Prize = () => {
     <View style={styles.container}>
       <SafeAreaView />
       <StatusBar barStyle={'dark-content'} backgroundColor={Color.white} />
-      <Text style={styles.headerText}>Leaderboard</Text>
+      <Header/>
       <FlatList
         data={leaderboardData}
         renderItem={({item}) => (

@@ -14,6 +14,7 @@ import {showMessage} from 'react-native-flash-message';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {contactUs} from '../../api/auth_api';
+import Header from '../../component/Header';
 
 const ContactUs = () => {
   const navigation = useNavigation();
@@ -86,6 +87,7 @@ const ContactUs = () => {
   };
   return (
     <View style={styles.main}>
+      <Header />
       <MaterialCommunityIcons
         name="message-flash"
         size={textScale(50)}
@@ -143,8 +145,6 @@ const styles = StyleSheet.create({
   main: {
     flex: 1,
     backgroundColor: Color.white,
-    // alignItems: 'center',
-    justifyContent: 'center',
     gap: moderateScaleVertical(10),
   },
   contactUsText: {

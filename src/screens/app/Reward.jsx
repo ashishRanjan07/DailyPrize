@@ -13,7 +13,8 @@ import {ImagePath} from '../../utils/ImagePath';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {moderateScale, textScale} from '../../utils/Responsive';
 import FontFamily from '../../utils/FontFamily';
-import { fetchRewardItem } from '../../api/auth_api';
+import {fetchRewardItem} from '../../api/auth_api';
+import Header from '../../component/Header';
 
 const Reward = () => {
   const [userPoints, setUserPoints] = useState(0);
@@ -51,7 +52,7 @@ const Reward = () => {
 
   const groupRewardsByType = () => {
     const grouped = {};
-    data.forEach((item) => {
+    data.forEach(item => {
       if (!grouped[item.type_name]) {
         grouped[item.type_name] = [];
       }
@@ -65,25 +66,7 @@ const Reward = () => {
   return (
     <View style={styles.main}>
       {/* Header */}
-      <View style={styles.headerHolder}>
-        <View style={styles.headerFirstView}>
-          <Image source={ImagePath.timer} style={styles.timerImage} />
-          <Text style={styles.amountText}>₹{userPoints}</Text>
-        </View>
-        <Image
-          source={ImagePath.logo}
-          resizeMode="contain"
-          style={styles.logo}
-        />
-        <TouchableOpacity style={{width: '25%', alignItems: 'center'}}>
-          <MaterialCommunityIcons
-            name="bell-badge"
-            size={textScale(30)}
-            color={Color.red}
-          />
-        </TouchableOpacity>
-      </View>
-
+      <Header />
       {/* Render Rewards */}
       <FlatList
         data={Object.keys(groupedData)}
@@ -95,7 +78,7 @@ const Reward = () => {
             <FlatList
               data={groupedData[item]}
               renderItem={renderRewardItem}
-              keyExtractor={(rewardItem) => rewardItem.id.toString()}
+              keyExtractor={rewardItem => rewardItem.id.toString()}
               horizontal
               showsHorizontalScrollIndicator={false}
             />
@@ -164,7 +147,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     overflow: 'hidden',
     borderColor: Color.borderColor,
-    
   },
   rewardImage: {
     width: moderateScale(80),

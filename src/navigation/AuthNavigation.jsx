@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {StyleSheet, Text, View} from 'react-native';
+import React from 'react';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Splash from '../screens/auth/Splash';
 import Registration from '../screens/auth/Registration';
 import Welcome from '../screens/auth/Welcome';
@@ -13,29 +13,36 @@ import PrivacyPolicy from '../screens/app/PrivacyPolicy';
 import TermAndCondition from '../screens/app/TermAndCondition';
 import ContactUs from '../screens/app/ContactUs';
 import AddRoom from '../screens/app/AddRoom';
+import CoinHistory from '../screens/app/CoinHistory';
+import Notification from '../screens/app/Notification';
+import DepositHistory from '../screens/app/DepositHistory';
+import WithDrawalHistory from '../screens/app/WithDrawalHistory';
 
 const Stack = createNativeStackNavigator();
 
 const AuthNavigation = () => {
   return (
-  <Stack.Navigator screenOptions={{headerShown:false}}>
-    <Stack.Screen name='Splash' component={Splash}/>
-    <Stack.Screen name='Registration' component={Registration}/>
-    <Stack.Screen name='Welcome' component={Welcome}/>
-    <Stack.Screen name='Login' component={Login}/>
-    <Stack.Screen name='Refer' component={Refer} options={{headerShown:true}}/>
-    <Stack.Screen name='BottomNavigation' component={BottomNavigation}/>
-    <Stack.Screen name='Add Coupon' component={AddCoupon} options={{headerShown:true}}/>
-    <Stack.Screen name='Scratch Card' component={ScratchCardContainer} options={{headerShown:true}}/>
-    <Stack.Screen name='Privacy policy' component={PrivacyPolicy} options={{headerShown:true}}/>
-    <Stack.Screen name='Terms And Conditions' component={TermAndCondition} options={{headerShown:true}}/>
-    <Stack.Screen name='Contact us' component={ContactUs} options={{headerShown:true}}/>
-    <Stack.Screen name='Join Room List' component={AddRoom} options={{headerShown:true}}/>
-    
-  </Stack.Navigator>
-  )
-}
+    <Stack.Navigator screenOptions={{headerShown: false}}>
+      <Stack.Screen name="Splash" component={Splash} />
+      <Stack.Screen name="Registration" component={Registration} />
+      <Stack.Screen name="Welcome" component={Welcome} />
+      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="Refer" component={Refer} />
+      <Stack.Screen name="BottomNavigation" component={BottomNavigation} />
+      <Stack.Screen name="Add Coupon" component={AddCoupon} />
+      <Stack.Screen name="Scratch Card" component={ScratchCardContainer} />
+      <Stack.Screen name="Privacy policy" component={PrivacyPolicy} />
+      <Stack.Screen name="Terms And Conditions" component={TermAndCondition} />
+      <Stack.Screen name="Contact us" component={ContactUs} />
+      <Stack.Screen name="Join Room List" component={AddRoom} />
+      <Stack.Screen name="Coin History" component={CoinHistory} />
+      <Stack.Screen name="Notification" component={Notification} />
+      <Stack.Screen name="WithDrawal History" component={WithDrawalHistory} />
+      <Stack.Screen name="Deposit History" component={DepositHistory} />
+    </Stack.Navigator>
+  );
+};
 
-export default AuthNavigation
+export default AuthNavigation;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});

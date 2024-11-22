@@ -8,19 +8,22 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Color from '../../utils/Colors';
-import {fetchAllVoucher, timer} from '../../api/auth_api';
+import {fetchAllVoucher} from '../../api/auth_api';
 import {
   moderateScale,
   moderateScaleVertical,
   textScale,
 } from '../../utils/Responsive';
-import CustomButton from '../../component/CustomButton';
-import {useNavigation} from '@react-navigation/native';
 import FontFamily from '../../utils/FontFamily';
-import {teal100} from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
+import Header from '../../component/Header';
+import {useNavigation} from '@react-navigation/native';
 
 const AddRoom = () => {
   const navigation = useNavigation();
+  const [roomListData, setRoomListData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Sample images array
   const imageArray = [
     require('../../assets/image/Room1.png'),
     require('../../assets/image/Room2.png'),
@@ -33,61 +36,64 @@ const AddRoom = () => {
     require('../../assets/image/Room9.png'),
     require('../../assets/image/Room10.png'),
   ];
-  const [roomListData, setRoomListData] = useState([]);
 
   useEffect(() => {
     fetchRoomList();
   }, []);
 
+  // Fetch Room Data
   const fetchRoomList = async () => {
-    const response = await fetchAllVoucher();
-    if (response.status_code === 200) {
-      setRoomListData(response?.data);
+    try {
+      const response = await fetchAllVoucher();
+      if (response.status_code === 200) {
+        setRoomListData(response?.data);
+      } else {
+        console.error('Failed to fetch room data', response.message);
+      }
+    } catch (error) {
+      console.error('Error fetching room list:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const renderItem = async({item, index}) => {
+  const renderItem = ({item, index}) => {
+    const imageIndex = index % imageArray.length;
+
     return (
-      <View style={styles.itemHolder} key={index}>
+      <TouchableOpacity
+        style={styles.itemHolder}
+        onPress={() => navigation.navigate('Scratch Card', {item: item})}>
         <ImageBackground
-          source={imageArray[index]}
-          resizeMode="contain"
+          source={imageArray[imageIndex]}
+          resizeMode="stretch"
           style={styles.backgroundImage}>
-          <Text style={styles.roomNameHolder}>Room {item?.amount}</Text>
-          <Text
-            style={[
-              styles.roomNameHolder,
-              {
-                width: '80%',
-                fontSize: textScale(12),
-                position: 'absolute',
-                bottom: 25,
-                padding: moderateScale(2),
-              },
-            ]}>
-            Game Starts in{'\n'} 
-          </Text>
+          <View style={styles.textOverlay}>
+            <Text style={styles.text}>Room {item.amount}</Text>
+          </View>
         </ImageBackground>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Scratch Card',{item:item})}
-          style={styles.buttonHolder}>
-          <Text style={styles.buttonText}>Join Now</Text>
-        </TouchableOpacity>
-      </View>
+      </TouchableOpacity>
     );
   };
 
   return (
     <View style={styles.main}>
-      <View style={styles.flatListHolder}>
-        <FlatList
-          data={roomListData}
-          renderItem={renderItem}
-          showsVerticalScrollIndicator={false}
-          keyExtractor={index => index}
-          numColumns={2}
-        />
-      </View>
+      <Header />
+      {loading ? (
+        <Text style={styles.loadingText}>Loading...</Text>
+      ) : (
+        <View style={styles.flatListHolder}>
+          <FlatList
+            data={roomListData}
+            renderItem={renderItem}
+            keyExtractor={(item, index) =>
+              item.id ? item.id.toString() : index.toString()
+            }
+            showsVerticalScrollIndicator={false}
+            ListEmptyComponent={<Text>No rooms available</Text>}
+          />
+        </View>
+      )}
     </View>
   );
 };
@@ -102,22 +108,20 @@ const styles = StyleSheet.create({
   itemHolder: {
     borderWidth: 2,
     margin: moderateScale(5),
-    width: '46%',
+    width: '98%',
     alignItems: 'center',
     borderColor: Color.borderColor,
     backgroundColor: Color.borderColor,
     justifyContent: 'center',
     borderRadius: moderateScale(5),
-    height: moderateScale(220),
+    height: moderateScale(200),
   },
   backgroundImage: {
     width: '100%',
-    height: '90%',
+    height: '100%',
   },
   flatListHolder: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   roomNameHolder: {
     alignItems: 'center',
@@ -132,18 +136,24 @@ const styles = StyleSheet.create({
     marginTop: moderateScaleVertical(10),
     textAlign: 'center',
   },
-  buttonHolder: {
-    borderWidth: 2,
-    marginTop: moderateScale(-10),
-    width: '60%',
-    alignItems: 'center',
-    borderRadius: moderateScale(5),
-    backgroundColor: Color.red,
-    borderColor: Color.red,
+  loadingText: {
+    fontFamily: FontFamily.Inter_Bold,
+    fontSize: textScale(18),
+    color: Color.black,
+    textAlign: 'center',
+    marginTop: moderateScaleVertical(50),
   },
-  buttonText: {
-    color: Color.white,
+  textOverlay: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    padding: moderateScale(5),
+  },
+  text: {
     fontFamily: FontFamily.Inter_Medium,
-    fontSize: textScale(14),
+    fontSize: textScale(16),
+    color: Color.white,
+    textAlign: 'center',
   },
 });

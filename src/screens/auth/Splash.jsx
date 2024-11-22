@@ -1,5 +1,5 @@
-import {Image, StatusBar, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect} from 'react';
+import {Animated, Image, StatusBar, StyleSheet, Text, View} from 'react-native';
+import React, {useEffect, useRef} from 'react';
 import Color from '../../utils/Colors';
 import {ImagePath} from '../../utils/ImagePath';
 import {useNavigation} from '@react-navigation/native';
@@ -7,8 +7,17 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Splash = () => {
   const navigation = useNavigation();
+  const scaleAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
+    // Animation for zoom-in effect
+    Animated.timing(scaleAnim, {
+      toValue: 1, // Final scale value
+      duration: 1000, // Duration of the animation
+      useNativeDriver: true, // Optimize performance
+    }).start();
+
+    // Check user data after a delay
     const checkUserData = async () => {
       try {
         const userData = await AsyncStorage.getItem('userData');
@@ -31,10 +40,13 @@ const Splash = () => {
   return (
     <View style={styles.main}>
       <StatusBar barStyle={'dark-content'} backgroundColor={Color.white} />
-      <Image
+      <Animated.Image
         source={ImagePath.logo}
         resizeMode="contain"
-        style={{width: '80%', height: '80%'}}
+        style={[
+          styles.logo,
+          {transform: [{scale: scaleAnim}]}, // Apply animated scaling
+        ]}
       />
     </View>
   );
@@ -48,5 +60,9 @@ const styles = StyleSheet.create({
     backgroundColor: Color.white,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  logo: {
+    width: '80%',
+    height: '80%',
   },
 });

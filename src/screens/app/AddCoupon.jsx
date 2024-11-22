@@ -1,8 +1,8 @@
 import {
   FlatList,
-  Image,
   ImageBackground,
-  ScrollView,
+  SafeAreaView,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -10,15 +10,13 @@ import {
 } from 'react-native';
 import React from 'react';
 import Color from '../../utils/Colors';
-import Data from '../../assets/json/AddPoints.json';
-import {
-  moderateScale,
-  moderateScaleVertical,
-  textScale,
-} from '../../utils/Responsive';
+import {moderateScale, textScale} from '../../utils/Responsive';
 import FontFamily from '../../utils/FontFamily';
 import {ImagePath} from '../../utils/ImagePath';
 import {showMessage} from 'react-native-flash-message';
+import Header from '../../component/Header';
+import {addPoints} from '../../api/auth_api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AddCoupon = ({route}) => {
   const {data} = route.params;
@@ -29,51 +27,68 @@ const AddCoupon = ({route}) => {
     ImagePath.image6,
     ImagePath.image8,
     ImagePath.image10,
-    ImagePath.image12,
-    ImagePath.image13,
+    ImagePath.image11,
     ImagePath.image14,
+    ImagePath.image16,
   ];
 
   const handleAdd = async item => {
-    console.log(item, 'line 49');
-    showMessage({
-      type: 'success',
-      icon: 'success',
-      message: `Coupon of ${item?.name} points are added Successfully`,
-    });
+    try {
+      const userData = await AsyncStorage.getItem('userData');
+      const parsedData = JSON.parse(userData);
+      console.log(parsedData, 'line 47');
+      
+      const data = {
+        user_id: parsedData?.id,
+        points: item?.point,
+      };
+      console.log(data, 'line 52');
+      
+      const response = await addPoints(data);
+      console.log(response, 'Line 54');
+    } catch (error) {
+     
+      const errorMessage = error?.message || 'An error occurred';
+      showMessage({
+        type: 'warning',
+        icon: 'warning',
+        message: errorMessage, 
+      });
+    }
   };
+  
 
-  const renderItem = ({item, index}) => {
+  const renderItem = ({item}) => {
+    const imageIndex = item.id - 1; 
+    const imageSource = imageArray[imageIndex] || null;
+
     return (
-      <View style={styles.itemHolder}>
+      <TouchableOpacity
+        style={styles.itemHolder}
+        onPress={() => handleAdd(item)}>
         <ImageBackground
-          source={imageArray[index]}
-          resizeMode="contain"
-          style={{width: '100%', height: moderateScale(175)}}>
-          <TouchableOpacity
-            style={styles.buttonHolder}
-            onPress={() => handleAdd(item)}>
-            <Text style={styles.text}>Add</Text>
-          </TouchableOpacity>
+          source={imageSource}
+          resizeMode="cover"
+          style={{width: '100%', height: moderateScale(150)}}>
+          <View style={styles.textOverlay}>
+            <Text style={styles.text}>{item.name}</Text>
+          </View>
         </ImageBackground>
-      </View>
+      </TouchableOpacity>
     );
   };
+
   return (
     <View style={styles.main}>
-      <View
-        style={{
-          alignItems: 'center',
-          alignSelf: 'center',
-          width: '98%',
-          justifyContent: 'center',
-        }}>
+      <SafeAreaView style={{backgroundColor: Color.white}} />
+      <StatusBar backgroundColor={Color.white} barStyle={'dark-content'} />
+      <Header />
+      <View style={styles.container}>
         <FlatList
           data={data}
           renderItem={renderItem}
-          keyExtractor={(item, index) => index}
+          keyExtractor={(item, index) => index.toString()}
           showsVerticalScrollIndicator={false}
-          numColumns={2}
         />
       </View>
     </View>
@@ -86,46 +101,38 @@ const styles = StyleSheet.create({
   main: {
     flex: 1,
     backgroundColor: Color.white,
-    alignItems: 'center',
-    justifyContent: 'center',
+  },
+  container: {
+    width: '95%',
+    alignSelf: 'center',
+    flex: 1,
   },
   itemHolder: {
     borderWidth: 2,
-    width: '47%',
+    width: '100%',
+    height: moderateScale(150),
     margin: moderateScale(5),
-    alignItems: 'center',
-    borderRadius: moderateScale(5),
+    borderRadius: moderateScale(10),
+    overflow: 'hidden',
     borderColor: Color.borderColor,
     backgroundColor: Color.borderColor,
     alignSelf: 'center',
-    justifyContent: 'center',
+  },
+  textOverlay: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    padding: moderateScale(5),
   },
   text: {
     fontFamily: FontFamily.Inter_Medium,
     fontSize: textScale(16),
     color: Color.white,
-    padding: moderateScale(5),
     textAlign: 'center',
   },
-  imageStyle: {
-    width: moderateScale(200),
-    height: moderateScale(100),
-  },
-  buttonHolder: {
-    borderWidth: 2,
-    bottom: 10,
-    position: 'absolute',
-    width: '75%',
-    alignSelf: 'center',
-    backgroundColor: Color.red,
-    borderColor: Color.red,
+  placeholder: {
+    justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: moderateScale(5),
-  },
-  buttonText: {
-    fontFamily: FontFamily.Inter_SemiBold,
-    color: Color.blue,
-    fontSize: textScale(14),
-    padding: moderateScale(5),
   },
 });

@@ -106,3 +106,93 @@ export const GAME_RUN_DURATION = async () => {
     .catch(error => error?.response?.data);
   return response;
 };
+export const SCRATCH_RANDOM_POINT = async data => {
+  const url = `${serverAddress}/random_point`;
+  const response = await axios
+    .post(url, data, {headers: {keys: keys}})
+    .then(res => {
+      return res?.data;
+    })
+    .catch(error => error?.response?.data);
+  return response;
+};
+export const REGISTRATION = async data => {
+  const url = `${serverAddress}/register`;
+  const response = await axios
+    .post(url, data, {headers: {keys: keys}})
+    .then(res => {
+      return res?.data;
+    })
+    .catch(error => error?.response?.data);
+  return response;
+};
+export const COIN_BALANCE = async data => {
+  const url = `${serverAddress}/get_wallet_point_balance`;
+  const response = await axios
+    .post(url, data, {headers: {keys: keys}})
+    .then(res => {
+      return res?.data;
+    })
+    .catch(error => error?.response?.data);
+  return response;
+};
+export const POINT_HISTORY = async data => {
+  const url = `${serverAddress}/point_history`;
+  const response = await axios
+    .post(url, data, {headers: {keys: keys}})
+    .then(res => {
+      return res?.data;
+    })
+    .catch(error => error?.response?.data);
+  return response;
+};
+export const DEPOSIT_HISTORY = async data => {
+  const url = `${serverAddress}/deposit_history`;
+  const response = await axios
+    .post(url, data, {headers: {keys: keys}})
+    .then(res => {
+      return res?.data;
+    })
+    .catch(error => error?.response?.data);
+  return response;
+};
+export const WITHDRAWAL_HISTORY = async data => {
+  const url = `${serverAddress}/withdrawal_histroy`;
+  const response = await axios
+    .post(url, data, {headers: {keys: keys}})
+    .then(res => {
+      return res?.data;
+    })
+    .catch(error => error?.response?.data);
+  return response;
+};
+export const FETCH_QR_IMAGE = async () => {
+  const url = `${serverAddress}/wallet_q_code`;
+  const response = await axios
+    .get(url, {headers: {keys: keys}})
+    .then(res => {
+      return res?.data;
+    })
+    .catch(error => error?.response?.data);
+  return response;
+};
+export const NOTIFICATION = async () => {
+  const url = `${serverAddress}/notification`;
+  const response = await axios
+    .get(url, {headers: {keys: keys}})
+    .then(res => {
+      return res?.data;
+    })
+    .catch(error => error?.response?.data);
+  return response;
+};
+export const ADD_POINTS = async data => {
+  const url = `${serverAddress}/random_point_inset`;
+  const response = await axios
+    .post(url, data, {headers: {keys: keys}})
+    .then(res => {
+      return res?.data;
+    })
+    .catch(error => error?.response?.data);
+  return response;
+};

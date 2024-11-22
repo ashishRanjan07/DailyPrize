@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import Color from '../../utils/Colors';
 import {ImagePath} from '../../utils/ImagePath';
 import {
@@ -20,33 +20,112 @@ import {
 import FontFamily from '../../utils/FontFamily';
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Header from '../../component/Header';
+import {showMessage} from 'react-native-flash-message';
+import {
+  depositHistory,
+  fetchCoinBalanceCount,
+  withdrawal,
+  withdrawalHistory,
+} from '../../api/auth_api';
 
 const Profile = () => {
+  const focus = useIsFocused();
+  const [coinBalance, setCoinBalance] = useState(0);
   const navigation = useNavigation();
-  const handleLogout = async() => {
+  const [name, setName] = useState();
+  const [withdrawalData, setWithdrawalData] = useState([]);
+  const [depositData, setDepositData] = useState([]);
+  const handleLogout = async () => {
     await AsyncStorage.removeItem('userData');
-    navigation.replace('Splash')
+    navigation.replace('Splash');
+  };
+  useEffect(() => {
+    fetchLoginData();
+  }, []);
+
+  useEffect(() => {
+    fetchCoinBalance();
+  }, [focus]);
+
+  const fetchCoinBalance = async () => {
+    try {
+      const userData = await AsyncStorage.getItem('userData');
+      const parsedData = JSON.parse(userData);
+      const data = {
+        id: parsedData?.id,
+      };
+      const response = await fetchCoinBalanceCount(data);
+      if (response?.status_code === 200) {
+        setCoinBalance(response?.data?.[0]?.wallet);
+      }
+    } catch (error) {
+      console.log(error, 'Line 22');
+    }
   };
 
+  const fetchLoginData = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const parseData = JSON.parse(userData);
+    console.log(parseData, 'Line 43');
+    setName(parseData?.display_name);
+    withdrawalHistoryData(parseData?.id);
+    depositHistoryData(parseData?.id);
+  };
+  const withdrawalHistoryData = async id => {
+    try {
+      const data = {
+        id: id,
+      };
+      const response = await withdrawalHistory(data);
+      if (response?.status_code === 200) {
+        setWithdrawalData(response?.data);
+      }
+    } catch (error) {
+      showMessage({
+        type: 'warning',
+        icon: 'warning',
+        message: error,
+      });
+    }
+  };
+  const depositHistoryData = async id => {
+    try {
+      const data = {
+        id: id,
+      };
+      const response = await depositHistory(data);
+      if (response?.status_code === 200) {
+        setDepositData(response?.data);
+      }
+    } catch (error) {
+      showMessage({
+        type: 'warning',
+        icon: 'warning',
+        message: error,
+      });
+    }
+  };
   const showLogoutAlert = () => {
     Alert.alert(
-      'Logout', 
-      'Are you sure you want to logout?', 
+      'Logout',
+      'Are you sure you want to logout?',
       [
         {
-          text: 'Cancel', 
-          onPress: () => console.log('Logout cancelled'), 
+          text: 'Cancel',
+          onPress: () => console.log('Logout cancelled'),
           style: 'cancel',
         },
         {
-          text: 'OK', 
-          onPress: handleLogout, 
+          text: 'OK',
+          onPress: handleLogout,
         },
       ],
-      {cancelable: true} 
+      {cancelable: true},
     );
   };
 
@@ -54,62 +133,93 @@ const Profile = () => {
     <View style={styles.main}>
       <SafeAreaView style={{backgroundColor: Color.white}} />
       <StatusBar backgroundColor={Color.white} barStyle={'dark-content'} />
-      <Image
-        source={ImagePath.logo}
-        resizeMode="cover"
-        style={{width: moderateScale(250), height: moderateScale(150)}}
-      />
-      <Text style={styles.nameText}>Hello,Ashish Ranjan!</Text>
-      <LinearGradient colors={['orange', 'red']} style={styles.gradientBox}>
-        <View style={{width: '50%'}}>
-          <Text style={styles.gradientText}>Balance{'\n'} 1.2k</Text>
-        </View>
-        <View style={{width: '50%'}}>
-          <Image
-            source={ImagePath.coin}
-            resizeMode="contain"
-            style={{width: '100%', height: moderateScale(150)}}
+      <Header />
+      <View style={{alignItems: 'center'}}>
+        <Text style={styles.nameText}>Hello,{name}!</Text>
+        <LinearGradient colors={['orange', 'red']} style={styles.gradientBox}>
+          <View style={{width: '50%'}}>
+            <Text style={styles.gradientText}>
+              Point Balance{'\n'}
+              {coinBalance}
+            </Text>
+          </View>
+          <View style={{width: '50%'}}>
+            <Image
+              source={ImagePath.coin}
+              resizeMode="contain"
+              style={{width: '100%', height: moderateScale(150)}}
+            />
+          </View>
+        </LinearGradient>
+        <TouchableOpacity
+          style={styles.boxHolder}
+          onPress={() =>
+            navigation.navigate('Deposit History', {data: depositData})
+          }>
+          <MaterialCommunityIcons
+            name="locker-multiple"
+            color={Color.black}
+            size={textScale(22)}
           />
-        </View>
-      </LinearGradient>
-      <TouchableOpacity
-        style={styles.boxHolder}
-        onPress={() => navigation.navigate('Refer')}>
-        <FontAwesome name="share" color={Color.black} size={textScale(22)} />
-        <Text style={styles.text}>Refer and Earn</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.boxHolder}
-        onPress={() => navigation.navigate('Privacy policy')}>
-        <MaterialIcons
-          name="security"
-          color={Color.black}
-          size={textScale(22)}
-        />
-        <Text style={styles.text}>Privacy Policy</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.boxHolder}
-        onPress={() => navigation.navigate('Terms And Conditions')}>
-        <MaterialIcons name="policy" color={Color.black} size={textScale(22)} />
-        <Text style={styles.text}>Terms and Condition</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.boxHolder}
-        onPress={() => navigation.navigate('Contact us')}>
-        <MaterialIcons
-          name="contact-support"
-          color={Color.black}
-          size={textScale(22)}
-        />
-        <Text style={styles.text}>Contact Us</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.boxHolder}
-      onPress={showLogoutAlert}>
-        <MaterialIcons name="logout" color={Color.black} size={textScale(22)} />
-        <Text style={styles.text}>Logout</Text>
-      </TouchableOpacity>
+          <Text style={styles.text}>Deposit History</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.boxHolder}
+          onPress={() =>
+            navigation.navigate('WithDrawal History', {data: withdrawalData})
+          }>
+          <MaterialCommunityIcons
+            name="history"
+            color={Color.black}
+            size={textScale(22)}
+          />
+          <Text style={styles.text}>Withdrawal History</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.boxHolder}
+          onPress={() => navigation.navigate('Refer')}>
+          <FontAwesome name="share" color={Color.black} size={textScale(22)} />
+          <Text style={styles.text}>Refer and Earn</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.boxHolder}
+          onPress={() => navigation.navigate('Privacy policy')}>
+          <MaterialIcons
+            name="security"
+            color={Color.black}
+            size={textScale(22)}
+          />
+          <Text style={styles.text}>Privacy Policy</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.boxHolder}
+          onPress={() => navigation.navigate('Terms And Conditions')}>
+          <MaterialIcons
+            name="policy"
+            color={Color.black}
+            size={textScale(22)}
+          />
+          <Text style={styles.text}>Terms and Condition</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.boxHolder}
+          onPress={() => navigation.navigate('Contact us')}>
+          <MaterialIcons
+            name="contact-support"
+            color={Color.black}
+            size={textScale(22)}
+          />
+          <Text style={styles.text}>Contact Us</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.boxHolder} onPress={showLogoutAlert}>
+          <MaterialIcons
+            name="logout"
+            color={Color.black}
+            size={textScale(22)}
+          />
+          <Text style={styles.text}>Logout</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -120,7 +230,7 @@ const styles = StyleSheet.create({
   main: {
     flex: 1,
     backgroundColor: Color.white,
-    alignItems: 'center',
+    // alignItems: 'center',
   },
   nameText: {
     fontFamily: FontFamily.Inter_Medium,

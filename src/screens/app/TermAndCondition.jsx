@@ -3,11 +3,13 @@ import React, {useState} from 'react';
 import Color from '../../utils/Colors';
 import {WebView} from 'react-native-webview';
 import {WaveIndicator} from 'react-native-indicators';
+import Header from '../../component/Header';
 const TermAndCondition = () => {
     const [loading, setLoading] = useState(true);
 
     return (
       <View style={styles.main}>
+        <Header/>
         {loading && <WaveIndicator color={Color.primary} />}
         <WebView
           showsVerticalScrollIndicator={false}
