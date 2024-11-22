@@ -1,0 +1,40 @@
+{
+  "rewards": {
+    "daily": [
+      {
+        "name": "Coffee Mug",
+        "description": "Get a premium coffee mug for your daily achievements.",
+        "image_url": "https://5.imimg.com/data5/SELLER/Default/2022/7/CB/FD/JS/16237373/new-product.jpeg"
+      },
+      {
+        "name": "Gift Card",
+        "description": "Win a $10 gift card to your favorite store.",
+        "image_url": "https://media.istockphoto.com/id/1361203739/vector/gift-card-icon-in-flat-style-discount-coupon-vector-illustration-on-isolated-background.jpg?s=612x612&w=0&k=20&c=TjREjzAnLGHXTkKWDC_uldNfEbIq0xszB2nQVA8fVDE="
+      }
+    ],
+    "weekly": [
+      {
+        "name": "Bike",
+        "description": "Win a stylish new bike for your weekly performance.",
+        "image_url": "https://w7.pngwing.com/pngs/1012/637/png-transparent-honda-livo-bike-thumbnail.png"
+      },
+      {
+        "name": "Smart Watch",
+        "description": "Earn a smart watch to keep track of your fitness goals.",
+        "image_url": "https://png.pngtree.com/png-vector/20240309/ourmid/pngtree-the-smartwatch-banner-png-image_11919210.png"
+      }
+    ],
+    "monthly": [
+      {
+        "name": "Car",
+        "description": "Drive away in a brand-new car for outstanding monthly achievements.",
+        "image_url": "https://www.kindpng.com/picc/m/181-1813878_vector-car-png-file-vector-png-of-car.png"
+      },
+      {
+        "name": "iPhone",
+        "description": "Win the latest iPhone for being the top performer of the month.",
+        "image_url": "https://www.pngitem.com/pimgs/m/525-5259250_apple-ios-13-iphone-hd-png-download-apple.png"
+      }
+    ]
+  }
+}

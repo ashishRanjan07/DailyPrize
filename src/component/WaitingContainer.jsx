@@ -11,8 +11,11 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Color from '../utils/Colors';
 import FontFamily from '../utils/FontFamily';
 import CustomButton from './CustomButton';
+import { useNavigation } from '@react-navigation/native';
 
-const WaitingContainer = ({waitingTime}) => {
+const WaitingContainer = ({waitingTime,data}) => {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.main}>
       <View style={{borderRadius: moderateScale(10), overflow: 'hidden'}}>
@@ -28,7 +31,7 @@ const WaitingContainer = ({waitingTime}) => {
         color={Color.yellow}
       />
       <Text style={styles.text}>Next Game will be start in {waitingTime} seconds</Text>
-      <CustomButton name={"JOIN NOW"}/>
+      <CustomButton name={"ADD COUPON"} handleAction={()=>navigation.navigate('Add Coupon',{data:data})}/>
     </View>
   );
 };

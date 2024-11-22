@@ -23,6 +23,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import FontFamily from '../../utils/FontFamily';
 import CustomButton from '../../component/CustomButton';
 import {useNavigation} from '@react-navigation/native';
+import {showMessage} from 'react-native-flash-message';
 
 const Registration = () => {
   const [mobile, setMobile] = useState('');
@@ -32,21 +33,89 @@ const Registration = () => {
   const [refer, setRefer] = useState('');
   const [selected, setSelected] = useState(false);
   const navigation = useNavigation();
+  const indianMobileRegex = /^(\+91|91|0)?[6-9]\d{9}$/;
+  const emailRegex =
+    /^(?!.*\.\.)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+  const handelRegistration = async () => {
+    if (name.trim() === '') {
+      showMessage({
+        type: 'info',
+        icon: 'info',
+        message: 'Please enter the name',
+      });
+      return null;
+    }
+    if (email.trim() === '') {
+      showMessage({
+        type: 'info',
+        icon: 'info',
+        message: 'Please enter the email id',
+      });
+      return null;
+    }
+    if (!emailRegex.test(email)) {
+      showMessage({
+        type: 'warning',
+        icon: 'warning',
+        message: 'Please enter valid email id',
+      });
+      return null;
+    }
+    if (mobile.trim() === '') {
+      showMessage({
+        type: 'info',
+        icon: 'info',
+        message: 'Please enter the Mobile Number',
+      });
+      return null;
+    }
+    if (!indianMobileRegex.test(mobile)) {
+      showMessage({
+        type: 'danger',
+        message: 'Please enter the Valid Mobile number',
+        icon: 'danger',
+      });
+      return null;
+    }
+    if (password.trim() === '') {
+      showMessage({
+        type: 'info',
+        icon: 'info',
+        message: 'Please enter the password',
+      });
+      return null;
+    }
+    if (password.length < 6) {
+      showMessage({
+        type: 'warning',
+        message: 'Please enter the strong password,',
+        icon: 'warning',
+      });
+      return null;
+    }
+    if (!selected) {
+      showMessage({
+        type: 'danger',
+        message: 'Please accept the terms and conditions',
+        icon: 'danger',
+      });
+      return null;
+    }
+    showMessage({
+      type: 'success',
+      message: 'Account Created Successfully, Please login',
+      icon: 'success',
+    });
+    navigation.navigate('Login');
+  };
 
   return (
     <View style={styles.main}>
       <StatusBar backgroundColor={Color.white} barStyle={'dark-content'} />
       <SafeAreaView style={{backgroundColor: Color.white}} />
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View
-          style={{
-            marginVertical: moderateScaleVertical(25),
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: moderateScale(10),
-            width: '95%',
-            alignSelf: 'center',
-          }}>
+        <View style={styles.view}>
           <Image
             source={ImagePath.logo}
             resizeMode="cover"
@@ -123,10 +192,7 @@ const Registration = () => {
             <Text style={styles.text}>Terms and Conditions</Text>
           </TouchableOpacity>
 
-          <CustomButton
-            name={'Register'}
-            handleAction={() => navigation.navigate('Login')}
-          />
+          <CustomButton name={'Register'} handleAction={handelRegistration} />
         </View>
       </ScrollView>
     </View>
@@ -147,7 +213,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderColor: Color.textGray,
     borderRadius: moderateScale(10),
-    padding:moderateScale(5),
+    padding: moderateScale(5),
     paddingHorizontal: moderateScale(10),
   },
 
@@ -167,5 +233,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: moderateScale(10),
+  },
+  view: {
+    marginVertical: moderateScaleVertical(25),
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: moderateScale(10),
+    width: '95%',
+    alignSelf: 'center',
   },
 });
