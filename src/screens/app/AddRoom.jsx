@@ -63,15 +63,11 @@ const AddRoom = () => {
     return (
       <TouchableOpacity
         style={styles.itemHolder}
-        onPress={() => navigation.navigate('Scratch Card', {item: item})}>
+        onPress={() => navigation.navigate('Scratch Card', {item: item,image:imageArray[imageIndex]})}>
         <ImageBackground
           source={imageArray[imageIndex]}
           resizeMode="stretch"
-          style={styles.backgroundImage}>
-          <View style={styles.textOverlay}>
-            <Text style={styles.text}>Room {item.amount}</Text>
-          </View>
-        </ImageBackground>
+          style={styles.backgroundImage}></ImageBackground>
       </TouchableOpacity>
     );
   };

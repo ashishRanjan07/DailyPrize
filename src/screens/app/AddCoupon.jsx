@@ -17,8 +17,10 @@ import {showMessage} from 'react-native-flash-message';
 import Header from '../../component/Header';
 import {addPoints} from '../../api/auth_api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useNavigation} from '@react-navigation/native';
 
 const AddCoupon = ({route}) => {
+  const navigation = useNavigation();
   const {data} = route.params;
   const imageArray = [
     ImagePath.image1,
@@ -37,28 +39,33 @@ const AddCoupon = ({route}) => {
       const userData = await AsyncStorage.getItem('userData');
       const parsedData = JSON.parse(userData);
       console.log(parsedData, 'line 47');
-      
+
       const data = {
         user_id: parsedData?.id,
         points: item?.point,
       };
       console.log(data, 'line 52');
       const response = await addPoints(data);
-      console.log(response, 'Line 54');
+      if (response?.status_code === 200) {
+        showMessage({
+          icon: 'success',
+          type: 'success',
+          message: response?.message,
+        });
+        navigation.navigate('Join Room List');
+      }
     } catch (error) {
-     
       const errorMessage = error?.message || 'An error occurred';
       showMessage({
         type: 'warning',
         icon: 'warning',
-        message: errorMessage, 
+        message: errorMessage,
       });
     }
   };
-  
 
   const renderItem = ({item}) => {
-    const imageIndex = item.id - 1; 
+    const imageIndex = item.id - 1;
     const imageSource = imageArray[imageIndex] || null;
 
     return (
@@ -68,11 +75,7 @@ const AddCoupon = ({route}) => {
         <ImageBackground
           source={imageSource}
           resizeMode="cover"
-          style={{width: '100%', height: moderateScale(150)}}>
-          <View style={styles.textOverlay}>
-            <Text style={styles.text}>{item.name}</Text>
-          </View>
-        </ImageBackground>
+          style={{width: '100%', height: moderateScale(150)}}></ImageBackground>
       </TouchableOpacity>
     );
   };

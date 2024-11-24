@@ -25,9 +25,8 @@ const SecondaryHeader = () => {
         id: parsedData?.id,
       };
       const response = await fetchCoinBalanceCount(data);
-      // console.log(response, 'Line 28');
       if (response?.status_code === 200) {
-        setCoinBalance(response?.data?.[0]?.wallet);
+        setCoinBalance(response?.data?.[0]?.points);
       }
     } catch (error) {
       console.log(error, 'Line 22');
