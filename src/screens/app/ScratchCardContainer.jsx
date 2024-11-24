@@ -1,3 +1,4 @@
+import React, {useState, useEffect, useRef} from 'react';
 import {
   Image,
   StyleSheet,
@@ -6,30 +7,31 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import React, {useState, useEffect, useRef} from 'react';
 import {ScratchCard} from 'rn-scratch-card';
+import {useNavigation} from '@react-navigation/native';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
+import {showMessage} from 'react-native-flash-message';
+import Header from '../../component/Header';
+import {gameRunDuration, scratchRandomPoint} from '../../api/auth_api';
 import Color from '../../utils/Colors';
 import {
   moderateScale,
   moderateScaleVertical,
   textScale,
 } from '../../utils/Responsive';
-import {ImagePath} from '../../utils/ImagePath';
 import FontFamily from '../../utils/FontFamily';
-import {gameRunDuration} from '../../api/auth_api';
-import {useNavigation} from '@react-navigation/native';
-import Header from '../../component/Header';
 
-const ScratchCardContainer = () => {
+const ScratchCardContainer = ({route}) => {
+  const {item, image} = route.params;
   const navigation = useNavigation();
   const [point, setPoint] = useState(0);
   const [scratchComplete, setScratchComplete] = useState(false);
   const [nextButtonVisible, setNextButtonVisible] = useState(false);
   const [remainingTime, setRemainingTime] = useState(60);
   const [timerActive, setTimerActive] = useState(true);
-  const [cardKey, setCardKey] = useState(0);
   const intervalRef = useRef(null);
-  const [hasScratched, setHasScratched] = useState(false);
+  const [apiCalled, setApiCalled] = useState(false);
+
   useEffect(() => {
     fetchGameDuration();
   }, []);
@@ -37,15 +39,11 @@ const ScratchCardContainer = () => {
   const fetchGameDuration = async () => {
     try {
       const response = await gameRunDuration();
-      // console.log(response, 'Line 28');
       if (response?.status_code === 200 && response?.data?.length > 0) {
         const time = response.data[0].time;
-        if (typeof time === 'number' && !isNaN(time)) {
-          setRemainingTime(time * 60);
-        } else {
-          console.error('Invalid time value:', time);
-          setRemainingTime(60);
-        }
+        setRemainingTime(
+          typeof time === 'number' && !isNaN(time) ? time * 60 : 60,
+        );
       }
     } catch (error) {
       console.error('Error fetching game duration:', error);
@@ -53,22 +51,41 @@ const ScratchCardContainer = () => {
     }
   };
 
-  const handleScratch = isScratched => {
-    console.log("hii")
-    if (isScratched  && !hasScratched) {
-      setScratchComplete(true);
-      setPoint(prevPoint => prevPoint + 20);
-      setHasScratched(true); 
-      setNextButtonVisible(true);
-      console.log("hii2")
+  const handleScratch = async progress => {
+    if (progress >= 75 && !apiCalled) {
+      setApiCalled(true);
+      try {
+        const data = {
+          amount: item?.amount,
+        };
+        const response = await scratchRandomPoint(data);
+        console.log(response?.data[0]?.prize, 'line 503');
+        const prize = response?.data[0]?.prize;
+        if (response?.status_code === 200) {
+          Alert.alert('Success', `you have won${prize}`);
+          setPoint(prevPoint => prevPoint + prize);
+          setScratchComplete(true);
+          setNextButtonVisible(true);
+          console.log('API call successful, response:', response);
+        } else {
+          console.error('Unexpected API response:', response);
+        }
+      } catch (error) {
+        console.error('Error during scratch API call:', error);
+        showMessage({
+          type: 'warning',
+          icon: 'warning',
+          message: 'Error fetching scratch reward.',
+        });
+      }
     }
   };
 
   const handleNext = () => {
-    Alert.alert('Success', 'Scratch Successfully');
     navigation.navigate('Home');
   };
 
+  // Timer logic
   useEffect(() => {
     if (timerActive) {
       intervalRef.current = setInterval(() => {
@@ -93,31 +110,28 @@ const ScratchCardContainer = () => {
   }, [timerActive]);
 
   return (
-    <View style={{flex:1,backgroundColor:Color.white}}>
-      <Header/>
-      <View style={styles.balanceHolder}>
-        <Image
-          source={ImagePath.timer}
-          resizeMode="contain"
-          style={styles.timerImageHolder}
-        />
+    <View style={{flex: 1, backgroundColor: Color.white}}>
+      <Header />
+      <View style={styles.pointsHolder}>
+        <FontAwesome6 name="wallet" size={textScale(25)} color={Color.white} />
         <Text style={styles.text}>Your wallet Point: {point}</Text>
       </View>
-
-      <Text style={styles.text2}>Your Remaining time: {remainingTime}s</Text>
-
+      <Text style={styles.text2}>
+        Please scratch the card within: {remainingTime}s
+      </Text>
       <View style={styles.container}>
         <Image
           source={require('./scratch_background.png')}
           style={styles.background_view}
         />
         <ScratchCard
-          key={cardKey}
-          source={ImagePath.scratchCard}
-          brushWidth={50}
-          onScratch={scratched => handleScratch(scratched)}
+          source={image}
+          brushWidth={100}
+          onScratch={progress => {
+            handleScratch(progress);
+          }}
           style={styles.scratch_card}
-          disabled={hasScratched || !timerActive}
+          disabled={scratchComplete || !timerActive}
         />
       </View>
 
@@ -134,54 +148,31 @@ export default ScratchCardContainer;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    width: '90%',
     alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 16,
+    marginTop: moderateScaleVertical(20),
+    borderRadius: moderateScale(20),
+    overflow: 'hidden',
+    alignSelf: 'center',
   },
   background_view: {
     position: 'absolute',
-    width: moderateScale(250),
-    height: moderateScale(250),
+    width: moderateScale(350),
+    height: moderateScale(350),
     backgroundColor: 'transparent',
     alignSelf: 'center',
-    borderRadius: 16,
   },
   scratch_card: {
-    width: moderateScale(250),
-    height: moderateScale(250),
+    width: moderateScale(400),
+    height: moderateScale(350),
     backgroundColor: 'transparent',
-  },
-  balanceHolder: {
-    width: '90%',
-    alignSelf: 'center',
-    borderRadius: moderateScale(10),
-    height: moderateScale(100),
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: moderateScale(5),
-  },
-  timerImageHolder: {
-    width: moderateScale(50),
-    height: moderateScale(50),
+    borderRadius: moderateScale(20),
+    overflow: 'hidden',
   },
   text: {
     fontFamily: FontFamily.Inter_Medium,
-    color: Color.red,
-    fontSize: textScale(16),
-  },
-  timerContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: moderateScale(10),
-  },
-  timerText: {
-    fontFamily: FontFamily.Inter_Medium,
     color: Color.white,
     fontSize: textScale(16),
-    backgroundColor: Color.red,
-    padding: moderateScale(5),
-    borderRadius: moderateScale(8),
   },
   nextButton: {
     borderWidth: 2,
@@ -194,6 +185,8 @@ const styles = StyleSheet.create({
     borderRadius: moderateScale(8),
     marginBottom: moderateScale(10),
     alignSelf: 'center',
+    position: 'absolute',
+    bottom: 10,
   },
   nextButtonText: {
     fontFamily: FontFamily.Inter_Medium,
@@ -202,8 +195,22 @@ const styles = StyleSheet.create({
   },
   text2: {
     fontFamily: FontFamily.Inter_Medium,
-    color: Color.blue,
+    fontSize: textScale(14),
+    color: Color.red,
     textAlign: 'center',
-    marginTop: moderateScaleVertical(10),
+    marginTop: moderateScaleVertical(14),
+  },
+  pointsHolder: {
+    borderWidth: 2,
+    width: '95%',
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    backgroundColor: Color.red,
+    padding: moderateScale(10),
+    borderRadius: moderateScale(10),
+    borderColor: Color.red,
+    gap: moderateScale(10),
   },
 });
