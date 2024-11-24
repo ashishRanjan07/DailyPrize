@@ -9,15 +9,12 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Color from '../../utils/Colors';
-import {ImagePath} from '../../utils/ImagePath';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {moderateScale, textScale} from '../../utils/Responsive';
 import FontFamily from '../../utils/FontFamily';
 import {fetchRewardItem} from '../../api/auth_api';
 import Header from '../../component/Header';
 
 const Reward = () => {
-  const [userPoints, setUserPoints] = useState(0);
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -37,7 +34,6 @@ const Reward = () => {
     }
   };
 
-  // Function to render individual reward items
   const renderRewardItem = ({item}) => (
     <View style={styles.rewardCard}>
       <Image
@@ -129,7 +125,6 @@ const styles = StyleSheet.create({
   categoryContainer: {
     marginBottom: moderateScale(20),
     paddingHorizontal: moderateScale(15),
-    alignItems: 'center',
   },
   categoryTitle: {
     fontFamily: FontFamily.Inter_Bold,
@@ -140,31 +135,31 @@ const styles = StyleSheet.create({
   rewardCard: {
     backgroundColor: Color.white,
     borderRadius: moderateScale(20),
-    padding: moderateScale(10),
+    padding: moderateScale(8),
     marginRight: moderateScale(15),
     alignItems: 'center',
-    width: moderateScale(155),
+    width: moderateScale(175),
     borderWidth: 2,
     overflow: 'hidden',
     borderColor: Color.borderColor,
   },
   rewardImage: {
-    width: moderateScale(80),
+    width: moderateScale(100),
     height: moderateScale(80),
     borderRadius: moderateScale(10),
     marginBottom: moderateScale(10),
   },
   rewardName: {
-    fontFamily: FontFamily.Inter_Medium,
-    fontSize: textScale(14),
+    fontFamily: FontFamily.Inter_SemiBold,
+    fontSize: textScale(16),
     color: Color.black,
     textAlign: 'center',
     marginBottom: moderateScale(5),
   },
   rewardDescription: {
-    fontFamily: FontFamily.Inter_Regular,
-    fontSize: textScale(12),
+    fontFamily: FontFamily.Inter_Medium,
+    fontSize: textScale(14),
     color: Color.darkGray,
-    textAlign: 'center',
+
   },
 });

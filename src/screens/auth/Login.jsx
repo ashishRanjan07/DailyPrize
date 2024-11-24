@@ -138,6 +138,7 @@ FETCH_REWARD();
         password:password
       }
       const response = await validateLogin(data);
+      console.log(response?.data,"Line 141")
       if(response?.status_code===200){
         await AsyncStorage.setItem('userData', JSON.stringify(response?.data));
         showMessage({

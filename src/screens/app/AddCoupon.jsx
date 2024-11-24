@@ -43,7 +43,6 @@ const AddCoupon = ({route}) => {
         points: item?.point,
       };
       console.log(data, 'line 52');
-      
       const response = await addPoints(data);
       console.log(response, 'Line 54');
     } catch (error) {
