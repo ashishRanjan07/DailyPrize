@@ -43,9 +43,7 @@ const Header = () => {
   const fetchNotificationData = async () => {
     try {
       const response = await notificationData();
-      console.log(response,"Line 46")
       if (response?.status_code === 200) {
-        console.log(response?.data,"Line 48")
         setNotificationList(response?.data);
       }
     } catch (error) {

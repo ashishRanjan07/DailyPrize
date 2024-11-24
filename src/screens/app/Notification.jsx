@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View, FlatList} from 'react-native';
+import {StyleSheet, Text, View, FlatList, TouchableOpacity} from 'react-native';
 import React from 'react';
 import Color from '../../utils/Colors';
 import SecondaryHeader from '../../component/SecondaryHeader';
@@ -7,11 +7,15 @@ import {
   moderateScaleVertical,
   textScale,
 } from '../../utils/Responsive';
+import {useNavigation} from '@react-navigation/native';
 
 const Notification = ({route}) => {
+  const navigation = useNavigation();
   const {data} = route.params;
   const renderItem = ({item}) => (
-    <View style={styles.card}>
+    <TouchableOpacity
+      style={styles.card}
+      onPress={() => navigation.navigate(item?.master_name)}>
       <Text style={styles.title}>{item.title}</Text>
       <Text style={styles.description}>{item.description}</Text>
       <View style={styles.footer}>
@@ -24,7 +28,7 @@ const Notification = ({route}) => {
           {item.status === 1 ? 'Active' : 'Inactive'}
         </Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
   return (
