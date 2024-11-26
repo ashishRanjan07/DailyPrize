@@ -8,14 +8,16 @@ import {
   StatusBar,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {moderateScale} from '../../utils/Responsive';
+import {moderateScale, textScale} from '../../utils/Responsive';
 import Color from '../../utils/Colors';
 import {showMessage} from 'react-native-flash-message';
 import {fetchLeaderBoard} from '../../api/auth_api';
 import Header from '../../component/Header';
+import {WaveIndicator} from 'react-native-indicators';
 
 const Prize = () => {
   const [leaderboardData, setLeaderBoardData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchLeaderBoardData();
@@ -23,6 +25,7 @@ const Prize = () => {
 
   const fetchLeaderBoardData = async () => {
     try {
+      setLoading(true);
       const response = await fetchLeaderBoard();
       if (response?.status_code === 200) {
         setLeaderBoardData(response?.data);
@@ -33,6 +36,8 @@ const Prize = () => {
         icon: 'danger',
         message: error,
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -40,24 +45,46 @@ const Prize = () => {
     <View style={styles.container}>
       <SafeAreaView />
       <StatusBar barStyle={'dark-content'} backgroundColor={Color.white} />
-      <Header/>
-      <FlatList
-        data={leaderboardData}
-        renderItem={({item}) => (
-          <View style={styles.rankCard}>
-            <Text style={styles.rankText}>{item.rank}</Text>
-            <Image
-              source={{uri: 'https://picsum.photos/200/300?grayscale'}}
-              style={styles.avatar}
+      <Header />
+      {loading ? (
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+          <WaveIndicator color={Color.red} />
+        </View>
+      ) : (
+        <View style={{flex: 1}}>
+          {leaderboardData.length > 0 ? (
+            <FlatList
+              data={leaderboardData}
+              renderItem={({item}) => (
+                <View style={styles.rankCard}>
+                  <Text style={styles.rankText}>{item.rank}</Text>
+                  <Image
+                    source={{uri: 'https://picsum.photos/200/300?grayscale'}}
+                    style={styles.avatar}
+                  />
+                  <View style={styles.userInfo}>
+                    <Text style={styles.userName}>{item.name}</Text>
+                    <Text style={styles.userPoints}>{item.points} pts</Text>
+                  </View>
+                </View>
+              )}
+              contentContainerStyle={styles.listContainer}
             />
-            <View style={styles.userInfo}>
-              <Text style={styles.userName}>{item.name}</Text>
-              <Text style={styles.userPoints}>{item.points} pts</Text>
+          ) : (
+            <View
+              style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+              <Text
+                style={{
+                  color: Color.primary,
+                  fontFamily: FontFamily.Inter_Medium,
+                  fontSize: textScale(18),
+                }}>
+                No Record Found.
+              </Text>
             </View>
-          </View>
-        )}
-        contentContainerStyle={styles.listContainer}
-      />
+          )}
+        </View>
+      )}
     </View>
   );
 };

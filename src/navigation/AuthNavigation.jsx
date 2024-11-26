@@ -17,6 +17,7 @@ import CoinHistory from '../screens/app/CoinHistory';
 import Notification from '../screens/app/Notification';
 import DepositHistory from '../screens/app/DepositHistory';
 import WithDrawalHistory from '../screens/app/WithDrawalHistory';
+import AvailableRoomToJoin from '../screens/app/AvailableRoomToJoin';
 
 const Stack = createNativeStackNavigator();
 
@@ -39,6 +40,7 @@ const AuthNavigation = () => {
       <Stack.Screen name="Notification" component={Notification} />
       <Stack.Screen name="WithDrawal History" component={WithDrawalHistory} />
       <Stack.Screen name="Deposit History" component={DepositHistory} />
+      <Stack.Screen name="Available Room To Join" component={AvailableRoomToJoin} />
     </Stack.Navigator>
   );
 };

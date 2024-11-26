@@ -1,5 +1,5 @@
 import {StyleSheet, Text, View, FlatList} from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import Color from '../../utils/Colors';
 import Header from '../../component/Header';
 import {
@@ -7,15 +7,45 @@ import {
   moderateScaleVertical,
   textScale,
 } from '../../utils/Responsive';
+import {depositHistory} from '../../api/auth_api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {WaveIndicator} from 'react-native-indicators';
+import { showMessage } from 'react-native-flash-message';
 
-const DepositHistory = ({route}) => {
-  const {data} = route.params;
+const DepositHistory = () => {
+  const [depositData, setDepositData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    depositHistoryData();
+  }, []);
+  const depositHistoryData = async () => {
+    setLoading(true);
+    const userData = await AsyncStorage.getItem('userData');
+    const parseData = JSON.parse(userData);
+    console.log(parseData, 'Line 43');
+    try {
+      const data = {
+        id: parseData?.id,
+      };
+      const response = await depositHistory(data);
+      if (response?.status_code === 200) {
+        console.log(response?.data, 'Line 104');
+        setDepositData(response?.data);
+      }
+    } catch (error) {
+      showMessage({
+        type: 'warning',
+        icon: 'warning',
+        message: error,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const renderItem = ({item}) => (
     <View style={styles.card}>
-      <Text style={styles.transactionId}>
-        Transaction ID: {item.tranjaction_id}
-      </Text>
+      <Text style={styles.transactionId}>Transaction ID: {item.id}</Text>
       <View style={styles.row}>
         <Text style={styles.label}>Date:</Text>
         <Text style={styles.value}>{item.date}</Text>
@@ -37,9 +67,9 @@ const DepositHistory = ({route}) => {
         <Text
           style={[
             styles.value,
-            item.approve ? styles.approved : styles.pending,
+            item.approve === 0 ? styles.pending : styles.approved,
           ]}>
-          {item.approve ? 'Approved' : 'Pending'}
+          {item.approve === 0 ? 'Pending' : 'Approved'}
         </Text>
       </View>
     </View>
@@ -48,13 +78,19 @@ const DepositHistory = ({route}) => {
   return (
     <View style={styles.main}>
       <Header />
-      <FlatList
-        data={data}
-        showsVerticalScrollIndicator={false}
-        renderItem={renderItem}
-        keyExtractor={item => item.id.toString()}
-        contentContainerStyle={styles.list}
-      />
+      {loading ? (
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+          <WaveIndicator color={Color.red} />
+        </View>
+      ) : (
+        <FlatList
+          data={depositData}
+          showsVerticalScrollIndicator={false}
+          renderItem={renderItem}
+          keyExtractor={item => item.id.toString()}
+          contentContainerStyle={styles.list}
+        />
+      )}
     </View>
   );
 };

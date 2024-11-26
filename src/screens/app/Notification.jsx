@@ -1,5 +1,5 @@
 import {StyleSheet, Text, View, FlatList, TouchableOpacity} from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import Color from '../../utils/Colors';
 import SecondaryHeader from '../../component/SecondaryHeader';
 import {
@@ -8,10 +8,43 @@ import {
   textScale,
 } from '../../utils/Responsive';
 import {useNavigation} from '@react-navigation/native';
+import FontFamily from '../../utils/FontFamily';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {notificationData} from '../../api/auth_api';
+import {showMessage} from 'react-native-flash-message';
+import {WaveIndicator} from 'react-native-indicators';
 
-const Notification = ({route}) => {
+const Notification = () => {
   const navigation = useNavigation();
-  const {data} = route.params;
+  const [notificationList, setNotificationList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    fetchNotificationData();
+  }, []);
+  const fetchNotificationData = async () => {
+    setLoading(true);
+    try {
+      const userData = await AsyncStorage.getItem('userData');
+      const parsedData = JSON.parse(userData);
+      const data = {
+        user_id: parsedData?.id,
+      };
+      console.log(data, 'Line 50');
+      const response = await notificationData(data);
+      if (response?.status_code === 200) {
+        setNotificationList(response?.data);
+      }
+    } catch (error) {
+      showMessage({
+        type: 'warning',
+        icon: 'warning',
+        message: error,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const renderItem = ({item}) => (
     <TouchableOpacity
       style={styles.card}
@@ -34,12 +67,34 @@ const Notification = ({route}) => {
   return (
     <View style={styles.main}>
       <SecondaryHeader />
-      <FlatList
-        data={data}
-        renderItem={renderItem}
-        keyExtractor={item => item.id.toString()}
-        contentContainerStyle={styles.list}
-      />
+      {loading ? (
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+          <WaveIndicator color={Color.red} />
+        </View>
+      ) : (
+        <View style={{flex:1}}>
+          {notificationList.length > 0 ? (
+            <FlatList
+              data={notificationList}
+              renderItem={renderItem}
+              keyExtractor={item => item.id.toString()}
+              contentContainerStyle={styles.list}
+            />
+          ) : (
+            <View
+              style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+              <Text
+                style={{
+                  color: Color.primary,
+                  fontFamily: FontFamily.Inter_Medium,
+                  fontSize: textScale(18),
+                }}>
+                No Notification Found
+              </Text>
+            </View>
+          )}
+        </View>
+      )}
     </View>
   );
 };

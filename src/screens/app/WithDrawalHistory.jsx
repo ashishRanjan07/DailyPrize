@@ -1,5 +1,5 @@
 import {StyleSheet, Text, View, FlatList} from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import Color from '../../utils/Colors';
 import Header from '../../component/Header';
 import {
@@ -7,9 +7,43 @@ import {
   moderateScaleVertical,
   textScale,
 } from '../../utils/Responsive';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {withdrawalHistory} from '../../api/auth_api';
+import {WaveIndicator} from 'react-native-indicators';
+import {showMessage} from 'react-native-flash-message';
+import FontFamily from '../../utils/FontFamily';
 
-const WithDrawalHistory = ({route}) => {
-  const {data} = route.params;
+const WithDrawalHistory = () => {
+  const [loading, setLoading] = useState(true);
+  const [withdrawalData, setWithdrawalData] = useState([]);
+  useEffect(() => {
+    withdrawalHistoryData();
+  }, []);
+
+  const withdrawalHistoryData = async () => {
+    setLoading(true);
+    const userData = await AsyncStorage.getItem('userData');
+    const parseData = JSON.parse(userData);
+    console.log(parseData, 'Line 43');
+    try {
+      const data = {
+        id: parseData?.id,
+      };
+      const response = await withdrawalHistory(data);
+      if (response?.status_code === 200) {
+        setWithdrawalData(response?.data);
+        console.log(response?.data, 'Line 88');
+      }
+    } catch (error) {
+      showMessage({
+        type: 'warning',
+        icon: 'warning',
+        message: error,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const renderItem = ({item}) => (
     <View style={styles.card}>
@@ -18,14 +52,7 @@ const WithDrawalHistory = ({route}) => {
         <Text style={styles.label}>Date:</Text>
         <Text style={styles.value}>{item.date}</Text>
       </View>
-      <View style={styles.row}>
-        <Text style={styles.label}>Account Number:</Text>
-        <Text style={styles.value}>{item.account_no}</Text>
-      </View>
-      <View style={styles.row}>
-        <Text style={styles.label}>IFC Code:</Text>
-        <Text style={styles.value}>{item.ifc_code}</Text>
-      </View>
+
       <View style={styles.row}>
         <Text style={styles.label}>UPI ID:</Text>
         <Text style={styles.value}>{item.upi_id}</Text>
@@ -50,12 +77,34 @@ const WithDrawalHistory = ({route}) => {
   return (
     <View style={styles.main}>
       <Header />
-      <FlatList
-        data={data}
-        renderItem={renderItem}
-        keyExtractor={item => item.id.toString()}
-        contentContainerStyle={styles.list}
-      />
+      {loading ? (
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+          <WaveIndicator color={Color.red} />
+        </View>
+      ) : (
+        <View style={{flex: 1}}>
+          {withdrawalData.length > 0 ? (
+            <FlatList
+              data={withdrawalData}
+              renderItem={renderItem}
+              keyExtractor={item => item.id.toString()}
+              contentContainerStyle={styles.list}
+            />
+          ) : (
+            <View
+              style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+              <Text
+                style={{
+                  color: Color.primary,
+                  fontFamily: FontFamily.Inter_Medium,
+                  fontSize: textScale(18),
+                }}>
+                No Withdrawal history Found
+              </Text>
+            </View>
+          )}
+        </View>
+      )}
     </View>
   );
 };

@@ -41,7 +41,7 @@ const Welcome = () => {
         },
       },
     });
-    navigation.navigate('Login')
+    navigation.replace('Login')
   };
 
   return (

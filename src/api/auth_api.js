@@ -10,6 +10,7 @@ import {
   FETCH_QR_IMAGE,
   FETCH_REWARD,
   GAME_RUN_DURATION,
+  JOIN_GAME_ADD_COUPON,
   NOTIFICATION,
   POINT_HISTORY,
   REGISTRATION,
@@ -104,9 +105,9 @@ export const fetchBannerImage = async () => {
     return error.message;
   }
 };
-export const fetchAllVoucher = async () => {
+export const fetchAllVoucher = async data => {
   try {
-    const response = await FETCH_ALL_COUPON();
+    const response = await FETCH_ALL_COUPON(data);
     if (!response) {
       return `Can't connect to server`;
     } else if (response?.error === true) {
@@ -258,9 +259,9 @@ export const qrCode = async () => {
     return error.message;
   }
 };
-export const notificationData = async () => {
+export const notificationData = async data => {
   try {
-    const response = await NOTIFICATION();
+    const response = await NOTIFICATION(data);
     if (!response) {
       return `Can't connect to server`;
     } else if (response?.error === true) {
@@ -275,6 +276,20 @@ export const notificationData = async () => {
 export const addPoints = async data => {
   try {
     const response = await ADD_POINTS(data);
+    if (!response) {
+      return `Can't connect to server`;
+    } else if (response?.error === true) {
+      return response;
+    } else {
+      return response;
+    }
+  } catch (error) {
+    return error.message;
+  }
+};
+export const joinGameAddCoupon = async data => {
+  try {
+    const response = await JOIN_GAME_ADD_COUPON(data);
     if (!response) {
       return `Can't connect to server`;
     } else if (response?.error === true) {

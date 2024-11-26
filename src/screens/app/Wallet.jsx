@@ -30,6 +30,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Header from '../../component/Header';
 import {useIsFocused} from '@react-navigation/native';
+import {WaveIndicator} from 'react-native-indicators';
 
 const Wallet = () => {
   const focus = useIsFocused();
@@ -42,7 +43,10 @@ const Wallet = () => {
   const [selected, setSelected] = useState('Deposit');
   const [withDrawalAmount, setWithDrawalAmount] = useState('');
   const [upiId, setUpiId] = useState('');
+  const [loading, setLoading] = useState(false);
   const indianMobileRegex = /^(\+91|91|0)?[6-9]\d{9}$/;
+  const upiIdRegex = /^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$/;
+
   useEffect(() => {
     fetchUserData();
     fetchQRImage();
@@ -61,7 +65,7 @@ const Wallet = () => {
       };
       const response = await fetchCoinBalanceCount(data);
       if (response?.status_code === 200) {
-        setCoinBalance(response?.data?.[0]?.wallet);
+        setCoinBalance(response?.data?.[0]?.points);
       }
     } catch (error) {
       console.log(error, 'Line 22');
@@ -69,6 +73,7 @@ const Wallet = () => {
   };
 
   const fetchQRImage = async () => {
+    setLoading(true);
     try {
       const response = await qrCode();
       if (response?.status_code === 200) {
@@ -82,6 +87,8 @@ const Wallet = () => {
         icon: 'warning',
         message: error,
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -144,7 +151,7 @@ const Wallet = () => {
       const data = {
         user_id: userid,
         date: formattedDate,
-        remark: 'Make Payment',
+        remark: 'Deposit',
         amount: amount,
         tranjaction_id: transactionId,
         phone_number: phone,
@@ -182,11 +189,20 @@ const Wallet = () => {
       });
       return null;
     }
+
     if (upiId.trim() === '') {
       showMessage({
         type: 'warning',
         icon: 'warning',
         message: 'Please enter the upiId to Withdraw',
+      });
+      return null;
+    }
+    if (!upiIdRegex.test(upiId)) {
+      showMessage({
+        type: 'danger',
+        message: 'Please enter the Valid UPI ID',
+        icon: 'danger',
       });
       return null;
     }
@@ -262,11 +278,14 @@ const Wallet = () => {
       {selected === 'Deposit' && (
         <View style={styles.contentHolder}>
           <Text style={styles.text2}>Recharge your wallet</Text>
+          <Text style={styles.text2}>Rs.1 = 1 Points</Text>
+          {loading && <WaveIndicator color={Color.primary} />}
           <Image
             source={{uri: imageUrl}}
             resizeMode="contain"
             style={{width: moderateScale(150), height: moderateScale(150)}}
           />
+
           <TextInput
             placeholder="Enter Amount"
             value={amount}

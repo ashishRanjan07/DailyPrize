@@ -19,30 +19,55 @@ import {
 import {ImagePath} from '../../utils/ImagePath';
 import FontFamily from '../../utils/FontFamily';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import WaitingContainer from '../../component/WaitingContainer';
 import AddCoupon from './AddCoupon';
 import ScratchCardContainer from './ScratchCardContainer';
 import Carousel from 'react-native-reanimated-carousel';
 import {showMessage} from 'react-native-flash-message';
-import {fetchAllVoucher, fetchBannerImage} from '../../api/auth_api';
+import {
+  fetchAllVoucher,
+  fetchBannerImage,
+  fetchCoinBalanceCount,
+  timer,
+} from '../../api/auth_api';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Header from '../../component/Header';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Home = () => {
   const navigation = useNavigation();
   const [waitingTime, setWaitingTime] = useState(3);
-  const [userPoints, setUserPoints] = useState(100);
-  const [couponData, setCouponData] = useState([]);
-
+  const [userPoints, setUserPoints] = useState();
+  const focus = useIsFocused();
   const width = Dimensions.get('window').width;
-
   const [adsImages, setAdsImages] = useState([]);
 
   useEffect(() => {
     fetchBannerImageFunction();
-    fetchCouponList();
+   
   }, []);
+  // const fetchCouponList = async () => {
+  //   setLoading(true);
+  //   const userData = await AsyncStorage.getItem('userData');
+  //   const parsedData = JSON.parse(userData);
+  //   const data = {
+  //     user_id: parsedData?.id,
+  //   };
+  //   try {
+  //     const response = await fetchAllVoucher(data);
+  //     if (response?.status_code === 200) {
+  //       setCouponData(response?.data);
+  //     }
+  //   } catch (error) {
+  //     showMessage({
+  //       icon: 'warning',
+  //       type: 'warning',
+  //       message: error,
+  //     });
+  //   }
+  // };
+
   // Fetch Banner Images
   const fetchBannerImageFunction = async () => {
     try {
@@ -69,23 +94,70 @@ const Home = () => {
       });
     }
   };
-  // Fetch All Coupon LIst
-  const fetchCouponList = async () => {
-    console.log('Fetching All Coupon List');
+
+  useEffect(() => {
+    fetchCoinBalance();
+    findNextGameTime();
+  }, [focus]);
+
+  const findNextGameTime = async () => {
     try {
-      const response = await fetchAllVoucher();
+      const data = { coupon: 1 };
+      const response = await timer(data);
+  
       if (response?.status_code === 200) {
-        setCouponData(response?.data);
-        console.log(response?.data, 'Line 70');
+        const today = new Date(); 
+        const filteredGames = response.data.filter(item => {
+          const gameTime = new Date(item.date_time);
+          return gameTime > today; 
+        });
+  
+        if (filteredGames.length > 0) {
+          const nextGame = filteredGames[0]; 
+          const nextGameTime = new Date(nextGame.date_time);
+          const timeDifference = Math.floor((nextGameTime - today) / 1000);
+  
+          setWaitingTime(timeDifference); 
+        } else {
+          showMessage({
+            icon: 'info',
+            type: 'info',
+            message: 'No upcoming games available!',
+          });
+        }
+      } else {
+        showMessage({
+          icon: 'warning',
+          type: 'warning',
+          message: response?.message || 'Failed to fetch game times!',
+        });
       }
     } catch (error) {
       showMessage({
         icon: 'warning',
         type: 'warning',
-        message: error,
+        message: 'Error fetching game times!',
       });
     }
   };
+  
+
+  const fetchCoinBalance = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const parsedData = JSON.parse(userData);
+    const data = {
+      id: parsedData?.id,
+    };
+    try {
+      const response = await fetchCoinBalanceCount(data);
+      if (response?.status_code === 200) {
+        setUserPoints(response?.data?.[0]?.points);
+      }
+    } catch (error) {
+      console.log(error, 'Line 22');
+    }
+  };
+
   useEffect(() => {
     if (waitingTime > 0) {
       const interval = setInterval(() => {
@@ -105,14 +177,12 @@ const Home = () => {
         <Text style={styles.nameText}>Welcome Ashish Ranjan</Text>
       </View>
       {userPoints === 0 ? (
-        <WaitingContainer waitingTime={waitingTime} data={couponData} />
+        <WaitingContainer waitingTime={waitingTime} />
       ) : (
         <>
           <TouchableOpacity
             style={styles.addCouponHolder}
-            onPress={() =>
-              navigation.navigate('Add Coupon', {data: couponData})
-            }>
+            onPress={() => navigation.navigate('Add Coupon')}>
             <View style={styles.innerView}>
               <View style={styles.textView}>
                 <Text style={styles.text}>🏷️Add Coupon🎁</Text>
@@ -133,7 +203,9 @@ const Home = () => {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.addCouponHolder}
-            onPress={() => navigation.navigate('Join Room List')}>
+            onPress={() =>
+              navigation.navigate('Available Room To Join')
+            }>
             <View style={styles.innerView}>
               <View style={styles.textView}>
                 <Text style={styles.text}>Play Scratch and Win</Text>
