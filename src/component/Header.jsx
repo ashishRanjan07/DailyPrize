@@ -7,22 +7,18 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Color from '../utils/Colors';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {
-  coinBalance,
   fetchCoinBalanceCount,
-  notificationData,
 } from '../api/auth_api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {showMessage} from 'react-native-flash-message';
 
 const Header = () => {
   const [coinBalance, setCoinBalance] = useState(0);
-  const [notificationList, setNotificationList] = useState([]);
+  
 
   const focus = useIsFocused();
   const navigation = useNavigation();
   useEffect(() => {
     fetchCoinBalance();
-    fetchNotificationData();
   }, [focus]);
 
   const fetchCoinBalance = async () => {
@@ -40,20 +36,7 @@ const Header = () => {
       console.log(error, 'Line 22');
     }
   };
-  const fetchNotificationData = async () => {
-    try {
-      const response = await notificationData();
-      if (response?.status_code === 200) {
-        setNotificationList(response?.data);
-      }
-    } catch (error) {
-      showMessage({
-        type: 'warning',
-        icon: 'warning',
-        message: error,
-      });
-    }
-  };
+  
 
   return (
     <View style={styles.headerHolder}>
@@ -72,7 +55,7 @@ const Header = () => {
       <TouchableOpacity
         style={{width: '20%', alignItems: 'flex-end'}}
         onPress={() =>
-          navigation.navigate('Notification', {data: notificationList})
+          navigation.navigate('Notification')
         }>
         <MaterialCommunityIcons
           name="bell-badge"

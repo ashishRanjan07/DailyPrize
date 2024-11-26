@@ -1,4 +1,4 @@
-import {Image, StyleSheet, Text, TextInput, View} from 'react-native';
+import {Image, ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
 import React, {useState} from 'react';
 import Color from '../../utils/Colors';
 import {ImagePath} from '../../utils/ImagePath';
@@ -15,13 +15,15 @@ import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {contactUs} from '../../api/auth_api';
 import Header from '../../component/Header';
-
+import {WaveIndicator} from 'react-native-indicators';
 const ContactUs = () => {
   const navigation = useNavigation();
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+
   const emailRegex =
     /^(?!.*\.\.)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
@@ -59,6 +61,7 @@ const ContactUs = () => {
       return null;
     }
     try {
+      setLoading(true);
       const userData = await AsyncStorage.getItem('userData');
       const parseData = JSON.parse(userData);
 
@@ -83,6 +86,8 @@ const ContactUs = () => {
         icon: 'danger',
         message: error,
       });
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -98,43 +103,56 @@ const ContactUs = () => {
       <Text style={styles.text}>
         Please fill the below form in decent manner
       </Text>
-      <View style={styles.view}>
-        <Text style={[styles.text, {textAlign: 'left'}]}>Name</Text>
-        <TextInput
-          placeholder="Name"
-          placeholderTextColor={Color.black}
-          value={name}
-          onChangeText={text => setName(text)}
-          keyboardType="default"
-          style={styles.textInputBox}
-        />
-      </View>
-      <View style={styles.view}>
-        <Text style={[styles.text, {textAlign: 'left'}]}>Email</Text>
-        <TextInput
-          placeholder="Email"
-          placeholderTextColor={Color.black}
-          value={email}
-          onChangeText={text => setEmail(text)}
-          keyboardType="email-address"
-          style={styles.textInputBox}
-        />
-      </View>
-      <View style={styles.view}>
-        <Text style={[styles.text, {textAlign: 'left'}]}>Message</Text>
-        <TextInput
-          placeholder="Message"
-          placeholderTextColor={Color.black}
-          value={message}
-          multiline={true}
-          onChangeText={text => setMessage(text)}
-          keyboardType="default"
-          style={styles.textInputBox}
-        />
-      </View>
-      <View style={styles.view}>
-        <CustomButton name={'Submit'} handleAction={handleSubmitForm} />
-      </View>
+      {!loading ? (
+        <ScrollView>
+          <View style={styles.view}>
+            <Text style={[styles.text, {textAlign: 'left'}]}>Name</Text>
+            <TextInput
+              placeholder="Name"
+              placeholderTextColor={Color.black}
+              value={name}
+              onChangeText={text => setName(text)}
+              keyboardType="default"
+              style={styles.textInputBox}
+            />
+          </View>
+          <View style={styles.view}>
+            <Text style={[styles.text, {textAlign: 'left'}]}>Email</Text>
+            <TextInput
+              placeholder="Email"
+              placeholderTextColor={Color.black}
+              value={email}
+              onChangeText={text => setEmail(text)}
+              keyboardType="email-address"
+              style={styles.textInputBox}
+            />
+          </View>
+          <View style={styles.view}>
+            <Text style={[styles.text, {textAlign: 'left'}]}>Message</Text>
+            <TextInput
+              placeholder="Message"
+              placeholderTextColor={Color.black}
+              value={message}
+              multiline={true}
+              onChangeText={text => setMessage(text)}
+              keyboardType="default"
+              style={styles.textInputBox}
+            />
+          </View>
+          <View style={styles.view}>
+            <CustomButton name={'Submit'} handleAction={handleSubmitForm} />
+          </View>
+        </ScrollView>
+      ) : (
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+               <WaveIndicator color={Color.red} />
+          </View>
+      )}
     </View>
   );
 };

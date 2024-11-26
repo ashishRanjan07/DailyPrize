@@ -5,15 +5,13 @@ import {
   moderateScale,
   moderateScaleVertical,
   textScale,
-  width,
 } from '../utils/Responsive';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Color from '../utils/Colors';
 import FontFamily from '../utils/FontFamily';
 import CustomButton from './CustomButton';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
-const WaitingContainer = ({waitingTime,data}) => {
+const WaitingContainer = ({waitingTime, data}) => {
   const navigation = useNavigation();
 
   return (
@@ -25,13 +23,18 @@ const WaitingContainer = ({waitingTime,data}) => {
           style={styles.image}
         />
       </View>
-      <MaterialCommunityIcons
-        name="timer-sand"
-        size={textScale(40)}
-        color={Color.yellow}
+      <Image
+        source={ImagePath.timerImageLogo}
+        resizeMode="cover"
+        style={{width: moderateScale(100), height: moderateScale(100)}}
       />
-      <Text style={styles.text}>Next Game will be start in {waitingTime} seconds</Text>
-      <CustomButton name={"ADD COUPON"} handleAction={()=>navigation.navigate('Add Coupon',{data:data})}/>
+      <Text style={styles.text}>
+        Next Game will be start in {waitingTime} seconds
+      </Text>
+      <CustomButton
+        name={'ADD COUPON'}
+        handleAction={() => navigation.navigate('Add Coupon', {data: data})}
+      />
     </View>
   );
 };
@@ -51,10 +54,10 @@ const styles = StyleSheet.create({
     width: moderateScale(300),
     height: moderateScale(300),
   },
-  text:{
-    fontFamily:FontFamily.Inter_Medium,
-    fontSize:textScale(15),
-    color:Color.blue,
-    textAlign:'center'
-  }
+  text: {
+    fontFamily: FontFamily.Inter_Medium,
+    fontSize: textScale(15),
+    color: Color.blue,
+    textAlign: 'center',
+  },
 });

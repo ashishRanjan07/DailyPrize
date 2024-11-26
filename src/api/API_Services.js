@@ -66,10 +66,10 @@ export const FETCH_BANNER_IMAGE = async () => {
     .catch(error => error?.response?.data);
   return response;
 };
-export const FETCH_ALL_COUPON = async () => {
+export const FETCH_ALL_COUPON = async (data) => {
   const url = `${serverAddress}/voucher_master`;
   const response = await axios
-    .get(url, {headers: {keys: keys}})
+    .post(url,data, {headers: {keys: keys}})
     .then(res => {
       return res?.data;
     })
@@ -176,10 +176,10 @@ export const FETCH_QR_IMAGE = async () => {
     .catch(error => error?.response?.data);
   return response;
 };
-export const NOTIFICATION = async () => {
+export const NOTIFICATION = async (data) => {
   const url = `${serverAddress}/notification`;
   const response = await axios
-    .get(url, {headers: {keys: keys}})
+    .post(url,data, {headers: {keys: keys}})
     .then(res => {
       return res?.data;
     })
@@ -196,3 +196,16 @@ export const ADD_POINTS = async data => {
     .catch(error => error?.response?.data);
   return response;
 };
+
+// https://game.igvault.cloud/api/join_game_insert
+export const JOIN_GAME_ADD_COUPON = async data => {
+  const url = `${serverAddress}/join_game_insert`;
+  const response = await axios
+    .post(url, data, {headers: {keys: keys}})
+    .then(res => {
+      return res?.data;
+    })
+    .catch(error => error?.response?.data);
+  return response;
+};
+

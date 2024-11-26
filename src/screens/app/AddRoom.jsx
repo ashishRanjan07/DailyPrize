@@ -17,11 +17,13 @@ import {
 import FontFamily from '../../utils/FontFamily';
 import Header from '../../component/Header';
 import {useNavigation} from '@react-navigation/native';
+import {WaveIndicator} from 'react-native-indicators';
 
-const AddRoom = () => {
+const AddRoom = ({route}) => {
+  const {data} = route.params;
+  console.log(data, 'Line 24');
   const navigation = useNavigation();
-  const [roomListData, setRoomListData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   // Sample images array
   const imageArray = [
@@ -37,57 +39,32 @@ const AddRoom = () => {
     require('../../assets/image/Room10.png'),
   ];
 
-  useEffect(() => {
-    fetchRoomList();
-  }, []);
-
-  // Fetch Room Data
-  const fetchRoomList = async () => {
-    try {
-      const response = await fetchAllVoucher();
-      if (response.status_code === 200) {
-        setRoomListData(response?.data);
-      } else {
-        console.error('Failed to fetch room data', response.message);
-      }
-    } catch (error) {
-      console.error('Error fetching room list:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const renderItem = ({item, index}) => {
-    const imageIndex = index % imageArray.length;
-
-    return (
-      <TouchableOpacity
-        style={styles.itemHolder}
-        onPress={() => navigation.navigate('Scratch Card', {item: item,image:imageArray[imageIndex]})}>
-        <ImageBackground
-          source={imageArray[imageIndex]}
-          resizeMode="stretch"
-          style={styles.backgroundImage}></ImageBackground>
-      </TouchableOpacity>
-    );
-  };
+ 
+;
 
   return (
     <View style={styles.main}>
       <Header />
       {loading ? (
-        <Text style={styles.loadingText}>Loading...</Text>
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+          <WaveIndicator color={Color.red} />
+        </View>
       ) : (
         <View style={styles.flatListHolder}>
-          <FlatList
-            data={roomListData}
-            renderItem={renderItem}
-            keyExtractor={(item, index) =>
-              item.id ? item.id.toString() : index.toString()
-            }
-            showsVerticalScrollIndicator={false}
-            ListEmptyComponent={<Text>No rooms available</Text>}
-          />
+          <TouchableOpacity
+            style={styles.itemHolder}
+            onPress={() =>
+              navigation.navigate('Scratch Card', {
+                item: data,
+                image: imageArray[data?.id],
+              })
+            }>
+            <ImageBackground
+              source={imageArray[data?.id]}
+              resizeMode="stretch"
+              style={styles.backgroundImage}
+            />
+          </TouchableOpacity>
         </View>
       )}
     </View>

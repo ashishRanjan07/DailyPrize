@@ -12,7 +12,7 @@ import {useNavigation} from '@react-navigation/native';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import {showMessage} from 'react-native-flash-message';
 import Header from '../../component/Header';
-import {gameRunDuration, scratchRandomPoint} from '../../api/auth_api';
+import {addPoints, gameRunDuration, scratchRandomPoint} from '../../api/auth_api';
 import Color from '../../utils/Colors';
 import {
   moderateScale,
@@ -20,9 +20,11 @@ import {
   textScale,
 } from '../../utils/Responsive';
 import FontFamily from '../../utils/FontFamily';
+import {ImagePath} from '../../utils/ImagePath';
 
 const ScratchCardContainer = ({route}) => {
   const {item, image} = route.params;
+  const userId = item?.user_id;
   const navigation = useNavigation();
   const [point, setPoint] = useState(0);
   const [scratchComplete, setScratchComplete] = useState(false);
@@ -31,6 +33,7 @@ const ScratchCardContainer = ({route}) => {
   const [timerActive, setTimerActive] = useState(true);
   const intervalRef = useRef(null);
   const [apiCalled, setApiCalled] = useState(false);
+  const [backImage, setBackImage] = useState(null);
 
   useEffect(() => {
     fetchGameDuration();
@@ -52,18 +55,29 @@ const ScratchCardContainer = ({route}) => {
   };
 
   const handleScratch = async progress => {
-    if (progress >= 75 && !apiCalled) {
+    if (progress >= 10 && !apiCalled) {
       setApiCalled(true);
       try {
         const data = {
           amount: item?.amount,
         };
         const response = await scratchRandomPoint(data);
-        console.log(response?.data[0]?.prize, 'line 503');
+        console.log(response, 'line 65');
+        console.log(response?.data[0], 'line 66');
+        console.log(response?.data[0]?.prize, 'line 67');
         const prize = response?.data[0]?.prize;
         if (response?.status_code === 200) {
-          Alert.alert('Success', `you have won${prize}`);
+          const data ={
+            user_id:userId,
+            points:prize,
+            join_game_id:response?.data[0]?.id
+          }
+          const updatePoints = await addPoints(data);
+          if(updatePoints.status_code===200){
+            console.log(updatePoints,"Line 72")
+          }
           setPoint(prevPoint => prevPoint + prize);
+          setBackImage(response?.data[0]?.image);
           setScratchComplete(true);
           setNextButtonVisible(true);
           console.log('API call successful, response:', response);
@@ -120,10 +134,20 @@ const ScratchCardContainer = ({route}) => {
         Please scratch the card within: {remainingTime}s
       </Text>
       <View style={styles.container}>
-        <Image
-          source={require('./scratch_background.png')}
-          style={styles.background_view}
-        />
+        {backImage === null ? (
+          <Image
+            source={require('./scratch_background.png')}
+            style={styles.background_view}
+          />
+        ) : (
+          <View>
+            <Image
+              source={{uri: `https://gameadmin.igvault.cloud/${backImage}`}}
+              style={styles.background_view}
+            />
+          </View>
+        )}
+
         <ScratchCard
           source={image}
           brushWidth={100}

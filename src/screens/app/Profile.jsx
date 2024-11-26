@@ -25,21 +25,13 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Header from '../../component/Header';
-import {showMessage} from 'react-native-flash-message';
-import {
-  depositHistory,
-  fetchCoinBalanceCount,
-  withdrawal,
-  withdrawalHistory,
-} from '../../api/auth_api';
+import {fetchCoinBalanceCount} from '../../api/auth_api';
 
 const Profile = () => {
   const focus = useIsFocused();
   const [coinBalance, setCoinBalance] = useState(0);
   const navigation = useNavigation();
   const [name, setName] = useState();
-  const [withdrawalData, setWithdrawalData] = useState([]);
-  const [depositData, setDepositData] = useState([]);
   const handleLogout = async () => {
     await AsyncStorage.removeItem('userData');
     navigation.replace('Splash');
@@ -61,7 +53,7 @@ const Profile = () => {
       };
       const response = await fetchCoinBalanceCount(data);
       if (response?.status_code === 200) {
-        setCoinBalance(response?.data?.[0]?.wallet);
+        setCoinBalance(response?.data?.[0]?.points);
       }
     } catch (error) {
       console.log(error, 'Line 22');
@@ -76,40 +68,7 @@ const Profile = () => {
     withdrawalHistoryData(parseData?.id);
     depositHistoryData(parseData?.id);
   };
-  const withdrawalHistoryData = async id => {
-    try {
-      const data = {
-        id: id,
-      };
-      const response = await withdrawalHistory(data);
-      if (response?.status_code === 200) {
-        setWithdrawalData(response?.data);
-      }
-    } catch (error) {
-      showMessage({
-        type: 'warning',
-        icon: 'warning',
-        message: error,
-      });
-    }
-  };
-  const depositHistoryData = async id => {
-    try {
-      const data = {
-        id: id,
-      };
-      const response = await depositHistory(data);
-      if (response?.status_code === 200) {
-        setDepositData(response?.data);
-      }
-    } catch (error) {
-      showMessage({
-        type: 'warning',
-        icon: 'warning',
-        message: error,
-      });
-    }
-  };
+
   const showLogoutAlert = () => {
     Alert.alert(
       'Logout',
@@ -153,9 +112,7 @@ const Profile = () => {
         </LinearGradient>
         <TouchableOpacity
           style={styles.boxHolder}
-          onPress={() =>
-            navigation.navigate('Deposit History', {data: depositData})
-          }>
+          onPress={() => navigation.navigate('Deposit History')}>
           <MaterialCommunityIcons
             name="locker-multiple"
             color={Color.black}
@@ -165,9 +122,7 @@ const Profile = () => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.boxHolder}
-          onPress={() =>
-            navigation.navigate('WithDrawal History', {data: withdrawalData})
-          }>
+          onPress={() => navigation.navigate('WithDrawal History')}>
           <MaterialCommunityIcons
             name="history"
             color={Color.black}

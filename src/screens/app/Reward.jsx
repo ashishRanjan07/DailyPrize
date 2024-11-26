@@ -13,9 +13,11 @@ import {moderateScale, textScale} from '../../utils/Responsive';
 import FontFamily from '../../utils/FontFamily';
 import {fetchRewardItem} from '../../api/auth_api';
 import Header from '../../component/Header';
+import {WaveIndicator} from 'react-native-indicators';
 
 const Reward = () => {
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchReward();
@@ -23,6 +25,7 @@ const Reward = () => {
 
   const fetchReward = async () => {
     try {
+      setLoading(true);
       const response = await fetchRewardItem();
       if (response?.status_code === 200) {
         setData(response?.data || []);
@@ -31,6 +34,8 @@ const Reward = () => {
       }
     } catch (error) {
       Alert.alert('Error', error.message || 'An error occurred');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -63,26 +68,31 @@ const Reward = () => {
     <View style={styles.main}>
       {/* Header */}
       <Header />
-      {/* Render Rewards */}
-      <FlatList
-        data={Object.keys(groupedData)}
-        renderItem={({item}) => (
-          <View style={styles.categoryContainer}>
-            <Text style={styles.categoryTitle}>
-              {item.charAt(0).toUpperCase() + item.slice(1)}
-            </Text>
-            <FlatList
-              data={groupedData[item]}
-              renderItem={renderRewardItem}
-              keyExtractor={rewardItem => rewardItem.id.toString()}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-            />
-          </View>
-        )}
-        keyExtractor={(item, index) => `category-${index}`}
-        showsVerticalScrollIndicator={false}
-      />
+      {loading ? (
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+          <WaveIndicator color={Color.red} />
+        </View>
+      ) : (
+        <FlatList
+          data={Object.keys(groupedData)}
+          renderItem={({item}) => (
+            <View style={styles.categoryContainer}>
+              <Text style={styles.categoryTitle}>
+                {item.charAt(0).toUpperCase() + item.slice(1)}
+              </Text>
+              <FlatList
+                data={groupedData[item]}
+                renderItem={renderRewardItem}
+                keyExtractor={rewardItem => rewardItem.id.toString()}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+              />
+            </View>
+          )}
+          keyExtractor={(item, index) => `category-${index}`}
+          showsVerticalScrollIndicator={false}
+        />
+      )}
     </View>
   );
 };
@@ -160,6 +170,5 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.Inter_Medium,
     fontSize: textScale(14),
     color: Color.darkGray,
-
   },
 });
