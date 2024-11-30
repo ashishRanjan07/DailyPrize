@@ -29,7 +29,6 @@ const Notification = () => {
       const data = {
         user_id: parsedData?.id,
       };
-      console.log(data, 'Line 50');
       const response = await notificationData(data);
       if (response?.status_code === 200) {
         setNotificationList(response?.data);
@@ -72,7 +71,7 @@ const Notification = () => {
           <WaveIndicator color={Color.red} />
         </View>
       ) : (
-        <View style={{flex:1}}>
+        <View style={{flex: 1}}>
           {notificationList.length > 0 ? (
             <FlatList
               data={notificationList}

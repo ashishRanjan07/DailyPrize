@@ -10,7 +10,8 @@ import {
 import {depositHistory} from '../../api/auth_api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {WaveIndicator} from 'react-native-indicators';
-import { showMessage } from 'react-native-flash-message';
+import {showMessage} from 'react-native-flash-message';
+import FontFamily from '../../utils/FontFamily';
 
 const DepositHistory = () => {
   const [depositData, setDepositData] = useState([]);
@@ -29,7 +30,6 @@ const DepositHistory = () => {
       };
       const response = await depositHistory(data);
       if (response?.status_code === 200) {
-        console.log(response?.data, 'Line 104');
         setDepositData(response?.data);
       }
     } catch (error) {
@@ -83,13 +83,33 @@ const DepositHistory = () => {
           <WaveIndicator color={Color.red} />
         </View>
       ) : (
-        <FlatList
-          data={depositData}
-          showsVerticalScrollIndicator={false}
-          renderItem={renderItem}
-          keyExtractor={item => item.id.toString()}
-          contentContainerStyle={styles.list}
-        />
+        <View style={{flex: 1}}>
+          {depositData.length > 0 ? (
+            <FlatList
+              data={depositData}
+              showsVerticalScrollIndicator={false}
+              renderItem={renderItem}
+              keyExtractor={item => item.id.toString()}
+              contentContainerStyle={styles.list}
+            />
+          ) : (
+            <View
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Text
+                style={{
+                  color: Color.primary,
+                  fontFamily: FontFamily.Inter_Medium,
+                  fontSize: textScale(18),
+                }}>
+                No Deposit history found
+              </Text>
+            </View>
+          )}
+        </View>
       )}
     </View>
   );

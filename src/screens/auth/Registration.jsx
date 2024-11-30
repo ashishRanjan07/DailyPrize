@@ -104,7 +104,6 @@ const Registration = () => {
       });
       return null;
     }
-    // keys, name,email,mobile,referralCode,password,fcm_token;
     try {
       const fcm_token = await AsyncStorage.getItem('fcmToken');
       const data = {

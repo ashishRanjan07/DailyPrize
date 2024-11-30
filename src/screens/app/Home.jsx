@@ -18,20 +18,15 @@ import {
 } from '../../utils/Responsive';
 import {ImagePath} from '../../utils/ImagePath';
 import FontFamily from '../../utils/FontFamily';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import WaitingContainer from '../../component/WaitingContainer';
-import AddCoupon from './AddCoupon';
-import ScratchCardContainer from './ScratchCardContainer';
 import Carousel from 'react-native-reanimated-carousel';
 import {showMessage} from 'react-native-flash-message';
 import {
-  fetchAllVoucher,
   fetchBannerImage,
   fetchCoinBalanceCount,
   timer,
 } from '../../api/auth_api';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import Header from '../../component/Header';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -39,34 +34,14 @@ const Home = () => {
   const navigation = useNavigation();
   const [waitingTime, setWaitingTime] = useState(3);
   const [userPoints, setUserPoints] = useState();
-  const focus = useIsFocused();
+  const [name, setName] = useState();
   const width = Dimensions.get('window').width;
   const [adsImages, setAdsImages] = useState([]);
 
   useEffect(() => {
+    fetchUserDetails();
     fetchBannerImageFunction();
-   
   }, []);
-  // const fetchCouponList = async () => {
-  //   setLoading(true);
-  //   const userData = await AsyncStorage.getItem('userData');
-  //   const parsedData = JSON.parse(userData);
-  //   const data = {
-  //     user_id: parsedData?.id,
-  //   };
-  //   try {
-  //     const response = await fetchAllVoucher(data);
-  //     if (response?.status_code === 200) {
-  //       setCouponData(response?.data);
-  //     }
-  //   } catch (error) {
-  //     showMessage({
-  //       icon: 'warning',
-  //       type: 'warning',
-  //       message: error,
-  //     });
-  //   }
-  // };
 
   // Fetch Banner Images
   const fetchBannerImageFunction = async () => {
@@ -98,26 +73,26 @@ const Home = () => {
   useEffect(() => {
     fetchCoinBalance();
     findNextGameTime();
-  }, [focus]);
+  }, []);
 
   const findNextGameTime = async () => {
     try {
-      const data = { coupon: 1 };
+      const data = {coupon: 1};
       const response = await timer(data);
-  
+
       if (response?.status_code === 200) {
-        const today = new Date(); 
+        const today = new Date();
         const filteredGames = response.data.filter(item => {
           const gameTime = new Date(item.date_time);
-          return gameTime > today; 
+          return gameTime > today;
         });
-  
+
         if (filteredGames.length > 0) {
-          const nextGame = filteredGames[0]; 
+          const nextGame = filteredGames[0];
           const nextGameTime = new Date(nextGame.date_time);
           const timeDifference = Math.floor((nextGameTime - today) / 1000);
-  
-          setWaitingTime(timeDifference); 
+
+          setWaitingTime(timeDifference);
         } else {
           showMessage({
             icon: 'info',
@@ -140,7 +115,6 @@ const Home = () => {
       });
     }
   };
-  
 
   const fetchCoinBalance = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -156,6 +130,12 @@ const Home = () => {
     } catch (error) {
       console.log(error, 'Line 22');
     }
+  };
+
+  const fetchUserDetails = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const parsedData = JSON.parse(userData);
+    setName(parsedData?.display_name);
   };
 
   useEffect(() => {
@@ -174,7 +154,7 @@ const Home = () => {
       <Header />
       {/* View Holder */}
       <View style={styles.nameHolder}>
-        <Text style={styles.nameText}>Welcome Ashish Ranjan</Text>
+        <Text style={styles.nameText}>Welcome {name} </Text>
       </View>
       {userPoints === 0 ? (
         <WaitingContainer waitingTime={waitingTime} />
@@ -203,9 +183,7 @@ const Home = () => {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.addCouponHolder}
-            onPress={() =>
-              navigation.navigate('Available Room To Join')
-            }>
+            onPress={() => navigation.navigate('Available Room To Join')}>
             <View style={styles.innerView}>
               <View style={styles.textView}>
                 <Text style={styles.text}>Play Scratch and Win</Text>
@@ -249,6 +227,8 @@ const Home = () => {
                   }}
                 />
               )}
+              // Make sure autoplay is properly handled
+              autoPlayInterval={3000}
             />
           </View>
         </>

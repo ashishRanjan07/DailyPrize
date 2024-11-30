@@ -35,7 +35,6 @@ const CoinHistory = ({route}) => {
     try {
       const response = await pointHistory(data);
       if (response?.status_code === 200) {
-        console.log(response?.data, 'Line 38');
         setData(response?.data);
       }
     } catch (error) {

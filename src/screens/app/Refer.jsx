@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Color from '../../utils/Colors';
 import {ImagePath} from '../../utils/ImagePath';
 import {
@@ -25,18 +25,29 @@ import Share from 'react-native-share';
 import {showMessage} from 'react-native-flash-message';
 import {useNavigation} from '@react-navigation/native';
 import Header from '../../component/Header';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Refer = () => {
   const navigation = useNavigation();
-  const [copiedText, setCopiedText] = useState('ASHISHRANJAN');
+  const [copiedText, setCopiedText] = useState('');
   const [referralCode, setReferralCode] = useState('');
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+  const fetchUserData = async()=>{
+    const userData = await AsyncStorage.getItem('userData');
+    const parsedData = JSON.parse(userData);
+    setCopiedText(parsedData?.refer_id)
+  }
+
   const copyToClipboard = () => {
     Clipboard.setString(copiedText);
   };
 
   const handleShareCode = async () => {
     const customOptions = {
-      message: `Use my referral code: ${copiedText} to earn 500 coins!`,
+      message: `Use my referral code: ${copiedText} to earn 100 coins!`,
       title: 'Refer and Earn',
     };
 
@@ -62,15 +73,15 @@ const Refer = () => {
     <View style={styles.main}>
       <StatusBar backgroundColor={Color.white} barStyle={'dark-content'} />
       <SafeAreaView style={{backgroundColor: Color.white}} />
-      <Header/>
+      <Header />
       <Image
         source={ImagePath.logo}
         resizeMode="cover"
         style={styles.imageStyle}
       />
-      <Text style={styles.headerText}>Get 500 Coins</Text>
+      <Text style={styles.headerText}>Get 100 Coins</Text>
       <Text style={styles.subHeaderText}>
-        Share your referral code with your friends and get 500 coins to both of
+        Share your referral code with your friends and get 100 coins to both of
         you
       </Text>
       <View style={styles.codeHolder}>

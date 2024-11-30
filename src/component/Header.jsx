@@ -10,6 +10,7 @@ import {
   fetchCoinBalanceCount,
 } from '../api/auth_api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import FontFamily from '../utils/FontFamily';
 
 const Header = () => {
   const [coinBalance, setCoinBalance] = useState(0);
@@ -90,4 +91,9 @@ const styles = StyleSheet.create({
     height: '100%',
     alignSelf: 'center',
   },
+  amountText:{
+    color:Color.black,
+    fontFamily:FontFamily.Inter_Regular,
+    fontSize:textScale(12)
+  }
 });
