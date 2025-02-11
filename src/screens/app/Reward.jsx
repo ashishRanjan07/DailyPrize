@@ -2,6 +2,7 @@ import {
   Alert,
   FlatList,
   Image,
+  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -66,6 +67,7 @@ const Reward = () => {
 
   return (
     <View style={styles.main}>
+    <SafeAreaView/>
       {/* Header */}
       <Header />
       {loading ? (

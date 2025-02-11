@@ -16,6 +16,7 @@ end
 
 target 'DailyPrize' do
   config = use_native_modules!
+  # use_frameworks! :linkage => :static
   pod 'Firebase', :modular_headers => true
   pod 'FirebaseCoreInternal', :modular_headers => true
   pod 'GoogleUtilities', :modular_headers => true
@@ -41,3 +42,4 @@ target 'DailyPrize' do
     )
   end
 end
+

@@ -1,4 +1,4 @@
-import {Image, ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
+import {Image, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
 import React, {useState} from 'react';
 import Color from '../../utils/Colors';
 import {ImagePath} from '../../utils/ImagePath';
@@ -92,6 +92,7 @@ const ContactUs = () => {
   };
   return (
     <View style={styles.main}>
+    <SafeAreaView/>
       <Header />
       <MaterialCommunityIcons
         name="message-flash"

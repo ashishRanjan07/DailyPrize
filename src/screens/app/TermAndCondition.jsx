@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
 import Color from '../../utils/Colors';
 import {WebView} from 'react-native-webview';
@@ -9,6 +9,7 @@ const TermAndCondition = () => {
 
     return (
       <View style={styles.main}>
+      <SafeAreaView/>
         <Header/>
         {loading && <WaveIndicator color={Color.primary} />}
         <WebView

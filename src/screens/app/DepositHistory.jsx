@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View, FlatList} from 'react-native';
+import {StyleSheet, Text, View, FlatList, SafeAreaView} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Color from '../../utils/Colors';
 import Header from '../../component/Header';
@@ -77,6 +77,7 @@ const DepositHistory = () => {
 
   return (
     <View style={styles.main}>
+    <SafeAreaView/>
       <Header />
       {loading ? (
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>

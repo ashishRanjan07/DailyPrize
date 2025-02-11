@@ -6,12 +6,13 @@ import {
   requestUserPermission,
   notificationListener,
 } from './src/component/NotificationServices';
-import './src/services/PushNotificationService';
+// import './src/services/PushNotificationService';
+import {Text, View} from 'react-native';
 const App = () => {
-  useEffect(() => {
-    requestUserPermission();
-    notificationListener();
-  }, []);
+  // useEffect(() => {
+  //   requestUserPermission();
+  //   notificationListener();
+  // }, []);
 
   return (
     <>
